@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity">
+
+    <TextView
+        android:id="@+id/labelNumOfCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:text="@string/text_of_labelNumOfCard"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelNumOfCard">
+
+        <ToggleButton
+            android:id="@+id/toggleNumOfCard12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_of_toggleNumOfCard12"
+            android:textColor="#CFD8DC"
+            android:textOff="@string/text_of_toggleNumOfCard12"
+            android:textOn="@string/text_of_toggleNumOfCard12"
+            tools:ignore="TextContrastCheck,TextContrastCheck" />
+
+        <ToggleButton
+            android:id="@+id/toggleNumOfCard20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_of_toggleNumOfCard20"
+            android:textColor="#CFD8DC"
+            android:textOff="@string/text_of_toggleNumOfCard20"
+            android:textOn="@string/text_of_toggleNumOfCard20"
+            tools:ignore="TextContrastCheck,TextContrastCheck" />
+
+        <ToggleButton
+            android:id="@+id/toggleNumOfCard30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_of_toggleNumOfCard30"
+            android:textColor="#CFD8DC"
+            android:textOff="@string/text_of_toggleNumOfCard30"
+            android:textOn="@string/text_of_toggleNumOfCard30"
+            tools:ignore="TextContrastCheck" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/labelImagePath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:text="@string/text_of_labelImagePath"
+        android:textColor="#B2DFDB"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupImagePath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelImagePath">
+
+        <RadioButton
+            android:id="@+id/radioSDCard"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:checked="true"
+            android:text="@string/text_of_radioSDCard"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/radioSpecifyDirectory"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/text_of_radioSpecifyDirectory"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textSpecifiedDirectoryPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_of_textSpecifiedDirectoryPath"
+            android:visibility="invisible" />
+    </RadioGroup>
+</androidx.constraintlayout.widget.ConstraintLayout>

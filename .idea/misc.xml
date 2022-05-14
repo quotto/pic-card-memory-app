@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.205" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/font/font_jkg.xml" value="0.1398148148148148" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/activity_detail_imaage.xml" value="0.1796875" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/activity_detail_image.xml" value="0.1" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/activity_game.xml" value="0.22" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/activity_main2.xml" value="0.1796875" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/activity_settings.xml" value="0.13994169096209913" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/cards12_fragment.xml" value="0.24259259259259258" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/cards12_view.xml" value="0.1" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/cards20_fragment.xml" value="0.3671875" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/cards20_view.xml" value="0.26666666666666666" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/cards30_fragment.xml" value="0.22" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/cards30_view.xml" value="0.26666666666666666" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/end_view.xml" value="0.22" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/fragment_detail_image.xml" value="0.14492753623188406" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/fragment_elapsed_time.xml" value="0.3671875" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/fragment_time.xml" value="0.3671875" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/game_base_view.xml" value="0.33" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/game_countdown_view.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/game_end_view.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/game_loading_view.xml" value="0.21" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/image_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/layout/layout.xml" value="0.23796296296296296" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.196" />
+        <entry key="..\:/Users/takah/StudioProjects/CardShuffle/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

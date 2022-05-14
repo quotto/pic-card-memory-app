@@ -1,0 +1,30 @@
+bugversion: 0.2
+env:
+  paramater-store:
+    SERVICE_ACCOUNT: /PicCardMemoryParameterAppStore/ServiceAccount
+    GCP_PROJECT_ID: /PicCardMemoryParameterAppStore/projectId
+  secrets-manager:
+    SERVICE_ACCOUNT_CREDENTIAL: "prod/PicCardMemoryApp/ServiceAccountCredential:SERVICE_ACCOUNT_CREDENTIAL"
+phase:
+  install:
+    commands:
+      - echo Install Gcloud CLI
+      - apt-get update -y
+      - sudo apt-get install apt-transport-https ca-certificates gnupg
+      - echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+      - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+      - sudo apt-get install google-cloud-sdk
+      - gcloud auth activate-service-account ${SERVICE_ACCOUNT} --key-file=${SERVICE_ACCOUNT_CREDENTIAL} --project=${GCP_PROJECT_ID}
+  unit_test:
+    commands:
+      - ./gradlew test
+  android_test:
+    commands:
+      - ./gradlew assembleAndroidTest
+      - gcloud firebase test android run --type instrumentation --app ./app/build/\outputs/apk/debug/app-debug.apk --test './app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk' --device 'model=Nexus6,version=21,locale=ja_JP,orientation=portrait' --test-targets 'package net.wackwack.pic_card_memory.suite'
+  release_build:
+    commands:
+      - ./gradlew bundle
+  artifacts:
+    file:
+      - app/build/outputs/bundle/release/app-release.abb

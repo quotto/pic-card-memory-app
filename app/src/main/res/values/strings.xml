@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">写!神経衰弱</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_of_startPlayButton">遊ぶ</string>
+    <string name="text_of_gotoSettingsButton">設定</string>
+    <string name="description_of_MainTitleImage">MainTitleLogo</string>
+    <string name="text_of_toggleNumOfCard20">20枚</string>
+    <string name="text_of_toggleNumOfCard12">12枚</string>
+    <string name="text_of_toggleNumOfCard30">30枚</string>
+    <string name="text_of_labelImagePath">写真の場所</string>
+    <string name="text_of_radioSDCard">SDカード全体</string>
+    <string name="text_of_radioSpecifyDirectory">フォルダを指定する</string>
+    <string name="text_of_textSpecifiedDirectoryPath">TextView</string>
+    <string name="text_of_labelNumOfCard">カードの枚数</string>
+    <string name="description_of_card_image">single card</string>
+    <string name="text_of_loading">loading</string>
+    <string name="text_of_retryButton">もう1回遊ぶ</string>
+    <string name="text_of_backButton">戻る</string>
+    <string name="description_of_detailImage">詳細画像</string>
+</resources>
