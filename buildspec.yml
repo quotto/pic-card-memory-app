@@ -1,30 +1,46 @@
-bugversion: 0.2
+version: 0.2
 env:
-  paramater-store:
+  parameter-store:
     SERVICE_ACCOUNT: /PicCardMemoryParameterAppStore/ServiceAccount
     GCP_PROJECT_ID: /PicCardMemoryParameterAppStore/projectId
+    APP_KEY_STORE_FILE: /PicCardMemoryParameterAppStore/keystore
   secrets-manager:
-    SERVICE_ACCOUNT_CREDENTIAL: "prod/PicCardMemoryApp/ServiceAccountCredential:SERVICE_ACCOUNT_CREDENTIAL"
-phase:
+    SERVICE_ACCOUNT_CREDENTIAL: "prod/PicCardMemoryApp/ServiceAccountKey:keyFile"
+    APP_KEY_STORE_PWD: "prod/PicCardMemoryApp/KeyStorePassword:storepwd"
+    APP_KEY_KEY_PWD: "prod/PicCardMemoryApp/KeyStorePassword:keypwd"
+phases:
   install:
     commands:
-      - echo Install Gcloud CLI
+      - echo install and setup Google Cloud Sdk CLI...
       - apt-get update -y
-      - sudo apt-get install apt-transport-https ca-certificates gnupg
+      - sudo apt-get install -y apt-transport-https ca-certificates gnupg
       - echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
       - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-      - sudo apt-get install google-cloud-sdk
-      - gcloud auth activate-service-account ${SERVICE_ACCOUNT} --key-file=${SERVICE_ACCOUNT_CREDENTIAL} --project=${GCP_PROJECT_ID}
-  unit_test:
+      - sudo apt-get update -y && sudo apt-get install -y google-cloud-sdk
+      - echo "${SERVICE_ACCOUNT_CREDENTIAL}" | base64 -d > ./service-account-credential.json
+      - gcloud auth activate-service-account ${SERVICE_ACCOUNT} --key-file=./service-account-credential.json --project=${GCP_PROJECT_ID}
+      - echo install Android SDK...
+      - wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip && unzip commandlinetools-linux-8092744_latest.zip
+      - mkdir ./android-sdk
+      - echo y | cmdline-tools/bin/sdkmanager --sdk_root=${PWD}/android-sdk "platform-tools" "platforms;android-31"
+      - export ANDROID_HOME=${pwd}/android-sdk
+  pre_build:
     commands:
+      - echo run set up gradle local.properties...
+      - aws s3 cp ${APP_KEY_STORE_FILE} ./app.jks
+      - echo "keystore.file=$(pwd)/app.jks" > ./local.properties
+      - echo "keystore.storepwd=${APP_KEY_STORE_PWD}" >> ./local.properties
+      - echo "keystore.keypwd=${APP_KEY_KEY_PWD}" >> ./local.properties
+      - echo run unit test...
+      - chmod +x ./gradlew
       - ./gradlew test
-  android_test:
-    commands:
+      - echo run Android test...
       - ./gradlew assembleAndroidTest
       - gcloud firebase test android run --type instrumentation --app ./app/build/\outputs/apk/debug/app-debug.apk --test './app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk' --device 'model=Nexus6,version=21,locale=ja_JP,orientation=portrait' --test-targets 'package net.wackwack.pic_card_memory.suite'
-  release_build:
+  build:
     commands:
+      - echo run bundle build...
       - ./gradlew bundle
-  artifacts:
-    file:
-      - app/build/outputs/bundle/release/app-release.abb
+artifacts:
+  file:
+    - app/build/outputs/bundle/release/app-release.abb
