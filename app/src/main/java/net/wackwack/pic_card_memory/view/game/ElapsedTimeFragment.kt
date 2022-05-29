@@ -1,4 +1,4 @@
-package net.wackwack.pic_card_memory
+package net.wackwack.pic_card_memory.view.game
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import net.wackwack.pic_card_memory.databinding.FragmentElapsedTimeBinding
 import net.wackwack.pic_card_memory.viewmodel.GameViewModel
 import kotlinx.coroutines.flow.collect
+import net.wackwack.pic_card_memory.R
 
 class ElapsedTimeFragment : Fragment() {
     private val viewModel by activityViewModels<GameViewModel>()

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="net.wackwack.pic_card_memory.viewmodel.GameViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/playerStatusContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".view.game.PlayerStatusFragment">
+
+        <ImageView
+            android:id="@+id/player1Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_baseline_favorite_24_p1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/player1Point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/player1color"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/player1Icon"
+            app:layout_constraintStart_toEndOf="@+id/player1Icon"
+            app:layout_constraintTop_toTopOf="@+id/player1Icon" />
+
+        <ImageView
+            android:id="@+id/imageArrowP1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_play_arrow_p1_24"
+            android:visibility="@{viewModel.currentPlayerIndex == 0 ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@+id/labelScore"
+            app:layout_constraintEnd_toStartOf="@+id/labelScore"
+            app:layout_constraintTop_toTopOf="@+id/labelScore" />
+
+        <ImageView
+            android:id="@+id/imageArrowP2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_play_arrow_p2_24"
+            android:visibility="@{viewModel.currentPlayerIndex == 1 ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/labelScore"
+            app:layout_constraintTop_toTopOf="@+id/labelScore" />
+
+        <ImageView
+            android:id="@+id/player2Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_favorite_24_p2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player2Point"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_favorite_24_p2" />
+
+        <TextView
+            android:id="@+id/player2Point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="0"
+            android:textColor="@color/player2color"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/player1Icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/player1Icon" />
+
+        <TextView
+            android:id="@+id/labelScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_of_score"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player2Icon"
+            app:layout_constraintStart_toEndOf="@+id/player1Point"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

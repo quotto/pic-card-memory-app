@@ -3,7 +3,7 @@ package net.wackwack.pic_card_memory.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import net.wackwack.pic_card_memory.model.SettingsUseCase
+import net.wackwack.pic_card_memory.service.SettingsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch

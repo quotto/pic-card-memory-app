@@ -5,7 +5,7 @@
     android:id="@+id/elapsedTimeFragmentContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ElapsedTimeFragment">
+    tools:context=".view.game.ElapsedTimeFragment">
 
     <TextView
         android:id="@+id/textElapsedTime"

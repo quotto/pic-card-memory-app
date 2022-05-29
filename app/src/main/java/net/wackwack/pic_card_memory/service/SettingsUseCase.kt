@@ -1,8 +1,9 @@
-package net.wackwack.pic_card_memory.model
+package net.wackwack.pic_card_memory.service
 
 import android.util.Log
+import net.wackwack.pic_card_memory.model.ImagePathType
+import net.wackwack.pic_card_memory.model.NumOfCard
 import net.wackwack.pic_card_memory.repository.SettingsRepository
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 class SettingsUseCase @Inject constructor (private val settingsRepository: SettingsRepository) {

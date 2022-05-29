@@ -13,10 +13,10 @@
         android:theme="@style/Theme.CardShuffle.NoActionBar"
         android:name=".PicCardMemoryApplication">
         <activity
-            android:name="net.wackwack.pic_card_memory.DetailImageActivity"
+            android:name="net.wackwack.pic_card_memory.view.game.DetailImageActivity"
             android:exported="false" />
         <activity
-            android:name="net.wackwack.pic_card_memory.MainActivity"
+            android:name="net.wackwack.pic_card_memory.view.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +24,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.wackwack.pic_card_memory.SettingsActivity"
+            android:name="net.wackwack.pic_card_memory.view.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"/>
         <activity
-            android:name="net.wackwack.pic_card_memory.GameActivity"
+            android:name="net.wackwack.pic_card_memory.view.game.GameActivity"
             android:exported="true"
             android:screenOrientation="portrait"/>
     </application>

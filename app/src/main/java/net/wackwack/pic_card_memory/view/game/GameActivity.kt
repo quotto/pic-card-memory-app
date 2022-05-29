@@ -1,4 +1,4 @@
-package net.wackwack.pic_card_memory
+package net.wackwack.pic_card_memory.view.game
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -7,9 +7,16 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
+import net.wackwack.pic_card_memory.R
+
+const val PARAM_GAME_MODE = "GAME_MODE"
+enum class GameMode {
+    SINGLE,
+    MULTIPLE,
+    COM
+}
 
 @AndroidEntryPoint
 class GameActivity : AppCompatActivity() {
@@ -42,10 +49,12 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun launchGame() {
+        val gameMode = intent.getStringExtra(PARAM_GAME_MODE)?: GameMode.SINGLE.toString()
         val fragmentManager = supportFragmentManager
         fragmentManager
             .beginTransaction()
-            .add(R.id.fragmentGameMainContainer, GameMainFragment.newInstance(), GameMainFragment::class.java.getSimpleName())
+            .add(R.id.fragmentGameMainContainer,
+                GameMainFragment.newInstance(gameMode))
             .commit()
     }
 }

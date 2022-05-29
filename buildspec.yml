@@ -11,6 +11,7 @@ env:
     SERVICE_ACCOUNT_CREDENTIAL: "prod/PicCardMemoryApp/ServiceAccountKey:keyFile"
     APP_KEY_STORE_PWD: "prod/PicCardMemoryApp/KeyStorePassword:storepwd"
     APP_KEY_KEY_PWD: "prod/PicCardMemoryApp/KeyStorePassword:keypwd"
+    API_KEY_GCLOUD: "prod/PicCardMemoryApp/GCloudServiceApiKey:apiKey"
 phases:
   install:
     commands:
@@ -33,12 +34,14 @@ phases:
       - echo "keystore.file=$(pwd)/app.jks" > ./local.properties
       - echo "keystore.storepwd=${APP_KEY_STORE_PWD}" >> ./local.properties
       - echo "keystore.keypwd=${APP_KEY_KEY_PWD}" >> ./local.properties
+      - echo run set up google-services.json...
+      - echo "${API_KEY_GCLOUD}" | base64 -d > ./app/google-services.json
       - echo run unit test...
       - chmod +x ./gradlew
       - ./gradlew test
       - echo run Android test...
-      - ./gradlew assembleDebug &&./gradlew assembleAndroidTest
-      - gcloud firebase test android run --type instrumentation --app ./app/build/outputs/apk/debug/app-debug.apk --test './app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk' --device 'model=Nexus6,version=21,locale=ja_JP,orientation=portrait' --test-targets 'package net.wackwack.pic_card_memory.suite'
+      - ./gradlew assembleDebug && ./gradlew assembleAndroidTest
+      - gcloud firebase test android run --type instrumentation --app ./app/build/outputs/apk/debug/app-debug.apk --test './app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk' --device 'model=Nexus6,version=23,locale=ja_JP,orientation=portrait' --test-targets 'package net.wackwack.pic_card_memory.suite'
   build:
     commands:
       - echo run bundle build...

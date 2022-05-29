@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
+import net.wackwack.pic_card_memory.view.main.MainActivity
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

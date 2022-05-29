@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".view.main.MainActivity">
 
     <ImageView
         android:id="@+id/titleImage"
@@ -13,36 +13,46 @@
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:contentDescription="@string/description_of_MainTitleImage"
-        app:layout_constraintBottom_toTopOf="@+id/startPlayButton"
+        app:layout_constraintBottom_toTopOf="@+id/mainButtonContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/logo"
         tools:srcCompat="@drawable/logo" />
 
-    <Button
-        android:id="@+id/startPlayButton"
+    <FrameLayout
+        android:id="@+id/mainButtonContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/activated"
-        android:fontFamily="@font/jkg"
-        android:text="@string/text_of_startPlayButton"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="TextContrastCheck" />
+        app:layout_constraintTop_toBottomOf="@id/titleImage">
 
-    <Button
-        android:id="@+id/gotoSettingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:fontFamily="@font/jkg"
-        android:text="@string/text_of_gotoSettingsButton"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startPlayButton" />
+    </FrameLayout>
+
+<!--    <Button-->
+<!--        android:id="@+id/startPlayButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:backgroundTint="@color/activated"-->
+<!--        android:fontFamily="@font/jkg"-->
+<!--        android:text="@string/text_of_startPlayButton"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="18sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        tools:ignore="TextContrastCheck" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/gotoSettingsButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="5dp"-->
+<!--        android:fontFamily="@font/jkg"-->
+<!--        android:text="@string/text_of_gotoSettingsButton"-->
+<!--        android:textSize="18sp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/startPlayButton" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

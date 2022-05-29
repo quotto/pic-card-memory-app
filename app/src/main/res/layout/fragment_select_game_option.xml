@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentSelectGameOption"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/design_default_color_secondary_variant"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".view.main.SelectGameOptionFragment">
+
+    <Button
+        android:id="@+id/singlePlayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/activated"
+        android:fontFamily="@font/jkg"
+        android:text="@string/text_of_singlePlayButton"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <Button
+        android:id="@+id/multiplePlayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/activated"
+        android:fontFamily="@font/jkg"
+        android:text="@string/text_of_multiplePlayButton"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/singlePlayButton"
+        tools:ignore="TextContrastCheck" />
+
+    <Button
+        android:id="@+id/backToMainFromGameMenuButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/jkg"
+        android:text="@string/text_of_backButton"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/multiplePlayButton"
+        tools:layout_editor_absoluteX="13dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
