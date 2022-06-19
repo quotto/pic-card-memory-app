@@ -1,4 +1,4 @@
-package net.wackwack.pic_card_memory
+package net.wackwack.pic_card_memory.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.app.Activity

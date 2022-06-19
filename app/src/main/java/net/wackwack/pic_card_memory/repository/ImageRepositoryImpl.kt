@@ -3,9 +3,12 @@ package net.wackwack.pic_card_memory.repository
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Size
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -13,6 +16,7 @@ import net.wackwack.pic_card_memory.InsufficientImagesException
 import net.wackwack.pic_card_memory.model.Card
 import net.wackwack.pic_card_memory.model.ImagePathType
 import net.wackwack.pic_card_memory.model.Settings
+import java.security.SecureRandom
 import javax.inject.Inject
 
 class ImageRepositoryImpl @Inject constructor(@ApplicationContext val context: Context): ImageRepository {
@@ -26,6 +30,14 @@ class ImageRepositoryImpl @Inject constructor(@ApplicationContext val context: C
             throw InsufficientImagesException()
         }
         return result
+    }
+
+    override fun loadImageByCard(card: Card): Bitmap {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            context.contentResolver.loadThumbnail(Uri.parse(card.uriString), Size(640, 480),null)
+        } else {
+            MediaStore.Images.Media.getBitmap(context.contentResolver,Uri.parse(card.uriString))
+        }
     }
 
     @SuppressLint("Range")
@@ -92,10 +104,10 @@ class ImageRepositoryImpl @Inject constructor(@ApplicationContext val context: C
 
     private fun generateRandomIndex(size: Int, requiredIndex: Int): List<Int> {
         val selections = arrayListOf<Int>()
-        val range = (0 until size)
+        val secureRandom = SecureRandom()
         (0 until requiredIndex).forEach { _ ->
             while (true) {
-                val rand = range.random()
+                val rand = secureRandom.nextInt(size-1)
                 if (!selections.contains(rand)) {
                     selections.add(rand)
                     break

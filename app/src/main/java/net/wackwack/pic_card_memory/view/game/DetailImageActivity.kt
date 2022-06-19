@@ -1,9 +1,10 @@
-package net.wackwack.pic_card_memory
+package net.wackwack.pic_card_memory.view.game
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.core.net.toUri
+import net.wackwack.pic_card_memory.R
 
 class DetailImageActivity : AppCompatActivity() {
     companion object {

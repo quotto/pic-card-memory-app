@@ -14,4 +14,7 @@
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
     <color name="activated">#FFFFDE59</color>
+    <color name="player1color">#F53189</color>
+    <color name="player2color">#3831F5</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

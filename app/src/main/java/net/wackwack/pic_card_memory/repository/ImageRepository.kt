@@ -1,17 +1,18 @@
 package net.wackwack.pic_card_memory.repository
 
-import androidx.lifecycle.ViewModel
+import android.graphics.Bitmap
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
+import net.wackwack.pic_card_memory.InsufficientImagesException
 import net.wackwack.pic_card_memory.model.Card
 import net.wackwack.pic_card_memory.model.Settings
 import javax.inject.Singleton
 
 interface ImageRepository {
-    fun selectCardsBySettings(settings: Settings): List<Card>
+    @Throws(InsufficientImagesException::class) fun selectCardsBySettings(settings: Settings): List<Card>
+    fun loadImageByCard(card: Card): Bitmap
 }
 
 @Module

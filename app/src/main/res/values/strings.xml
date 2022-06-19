@@ -20,4 +20,11 @@
     <string name="text_of_retryButton">もう1回遊ぶ</string>
     <string name="text_of_backButton">戻る</string>
     <string name="description_of_detailImage">詳細画像</string>
+    <string name="label_of_result_time">タイム</string>
+    <string name="text_of_singlePlayButton">一人で遊ぶ</string>
+    <string name="text_of_multiplePlayButton">二人で遊ぶ</string>
+    <string name="text_of_vsComButton">COMと対戦</string>
+    <string name="text_of_Winner">Winner</string>
+    <string name="label_of" />
+    <string name="label_of_score">スコア</string>
 </resources>

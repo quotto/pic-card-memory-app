@@ -1,4 +1,4 @@
-package net.wackwack.pic_card_memory
+package net.wackwack.pic_card_memory.view.game
 
 import android.app.ActivityOptions
 import android.content.Intent
@@ -27,18 +27,26 @@ import net.wackwack.pic_card_memory.viewmodel.GameMessage
 import net.wackwack.pic_card_memory.viewmodel.GameViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import net.wackwack.pic_card_memory.InsufficientImagesException
+import net.wackwack.pic_card_memory.R
 import net.wackwack.pic_card_memory.databinding.GameCountdownViewBinding
 import net.wackwack.pic_card_memory.databinding.GameLoadingViewBinding
+import net.wackwack.pic_card_memory.model.Player
 
 @AndroidEntryPoint
-class GameMainFragment : Fragment() {
+class GameMainFragment : Fragment(), GameEndViewReceiver {
 
     companion object {
-        fun newInstance() = GameMainFragment()
+        fun newInstance(gameMode: String) = GameMainFragment().apply {
+            arguments = Bundle().apply {
+                putString(PARAM_GAME_MODE, gameMode)
+            }
+        }
     }
 
     @VisibleForTesting
     val countingIdlingResourceForLoading = CountingIdlingResource("LoadImageIdlingResource")
+    @VisibleForTesting
     val countingIdlingResourceForCountDown = CountingIdlingResource("CountDownIdlingResource")
 
 
@@ -50,8 +58,10 @@ class GameMainFragment : Fragment() {
         GameCountdownViewBinding.bind(View.inflate(context, R.layout.game_countdown_view, null))
     }
     private val gameLoadingViewBinding by lazy {
-        GameLoadingViewBinding.bind(View.inflate(context,R.layout.game_loading_view,null))
+        GameLoadingViewBinding.bind(View.inflate(context, R.layout.game_loading_view,null))
     }
+
+    private lateinit var gameMode: GameMode
 
     /*
     game_loading_view,game_end_view,game_countdown_viewなど動的に全面にかぶせるView用のレイアウトパラメータ
@@ -68,14 +78,18 @@ class GameMainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.game_base_view, container, false)
+        gameMode = GameMode.valueOf(arguments?.getString(PARAM_GAME_MODE)?: GameMode.SINGLE.toString())
+        return when(gameMode){
+            GameMode.MULTIPLE -> inflater.inflate(R.layout.game_base_vs_view, container, false)
+            else -> inflater.inflate(R.layout.game_base_view, container, false)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         val fragment = this
+
         lifecycleScope.launchWhenStarted {
             viewModel.message.collect { state ->
                 Log.d(javaClass.simpleName, "Message received")
@@ -90,14 +104,16 @@ class GameMainFragment : Fragment() {
                                 fragment,
                                 viewModel.viewModelsCards[state.target.first].bitmap,
                                 true,
-                                state
+                                state,
+                                state.target.first
                             )
                             val secondCard = view.findViewWithTag("card${state.target.second}") as CardView
                             secondCard.onCardAction(
                                 fragment,
                                 viewModel.viewModelsCards[state.target.second].bitmap,
                                 true,
-                                state
+                                state,
+                                state.target.second
                             )
                         }
                     }
@@ -109,28 +125,32 @@ class GameMainFragment : Fragment() {
                                 fragment,
                                 viewModel.viewModelsCards[state.target].bitmap,
                                 true,
-                                state
+                                state,
+                                state.target
                             )
                         }
                     }
                     is GameMessage.Start -> {
                         Log.d(javaClass.simpleName, "Start Game")
                         setAllCardViewImage()
-                        setUpCountDownViewAnimation()
+                        showCountDown()
                         // カードの配置が終わったらアイドリング状態にする
                         countingIdlingResourceForLoading.decrement()
                     }
-                    is GameMessage.Clear -> {
+                    is GameMessage.GameEnd -> {
                         Log.d(javaClass.simpleName, "Game Clear")
+                        val fragmentId = showGameEndView(state.winner)
                         endViewBinding.retryButton.setOnClickListener {
-                            showLoadViewAndStartGame()
+                            childFragmentManager.findFragmentById(fragmentId)?.let{
+                                childFragmentManager.beginTransaction().remove(it).commitNow()
+
+                                (view as ConstraintLayout).removeView(endViewBinding.root)
+                                showLoadViewAndStartGame()
+                            }
                         }
-                        endViewBinding.backButton.setOnClickListener {
+                        endViewBinding.backToMainFromGameButton.setOnClickListener {
                             activity?.finish()
                         }
-                        setUpGameEndViewAnimation()
-                        (view as ConstraintLayout).addView(endViewBinding.root)
-                        endViewBinding.textClear1.animate().start()
                     }
                     is GameMessage.Detail -> {
                         Log.d(javaClass.simpleName, "Show Detail Image@${state.target}")
@@ -182,9 +202,10 @@ class GameMainFragment : Fragment() {
     private fun showLoadViewAndStartGame() {
         gameLoadingViewBinding.root.layoutParams = gameMainContainerLayoutParams
         (view as ConstraintLayout).addView(gameLoadingViewBinding.root)
+
         // テスト用のIdlingResourceをビジー状態にする
         countingIdlingResourceForLoading.increment()
-        viewModel.setupGame(Dispatchers.Default)
+        viewModel.startGame(Dispatchers.Default, gameMode, activity?.theme?: resources.newTheme())
     }
 
     private fun setAllCardViewImage() {
@@ -210,7 +231,7 @@ class GameMainFragment : Fragment() {
         }
     }
 
-    private fun setUpCountDownViewAnimation() {
+    private fun showCountDown() {
         countingIdlingResourceForCountDown.increment()
         (view as ConstraintLayout).removeView(gameLoadingViewBinding.root)
         countdownViewBinding.root.layoutParams = gameMainContainerLayoutParams
@@ -249,61 +270,36 @@ class GameMainFragment : Fragment() {
         }
     }
 
-    private fun setUpGameEndViewAnimation() {
+    private fun showGameEndView(winner: Player?): Int {
         endViewBinding.root.layoutParams = gameMainContainerLayoutParams
-        endViewBinding.retryButton.alpha = 0.0f
-        endViewBinding.backButton.alpha = 0.0f
-        endViewBinding.resultTimeContainer.alpha = 0.0f
-        endViewBinding.textResultTime.text = viewModel.elapsedTimeToString()
-
-        val l = listOf(
-            endViewBinding.textClear1,
-            endViewBinding.textClear2,
-            endViewBinding.textClear3,
-            endViewBinding.textClear4,
-            endViewBinding.textClear5,
-            endViewBinding.textClear6
-        )
-
-        val toScaleOfClearText = 1.5f
-        val displayDurationOfClearText = 100L
-        val displayDurationOfOtherViewWidget = 500L
-        l.forEachIndexed { index, textView ->
-            textView.scaleX = 0.0f
-            textView.scaleY = 0.0f
-            val nextView = if(index < l.size-1) l[index+1] else null
-            val animator = textView.animate()
-            animator.duration = displayDurationOfClearText
-            animator.scaleX(toScaleOfClearText)
-            animator.scaleY(toScaleOfClearText)
-            animator.withEndAction {
-                animator.scaleX(1.0f)
-                animator.scaleY(1.0f)
-                nextView?.also {nextView->
-                    nextView.animate().start()
-                }?: run {
-                    endViewBinding.retryButton.animate().apply {
-                        alpha(1.0f)
-                        duration = displayDurationOfOtherViewWidget
-                    }
-                    endViewBinding.backButton.animate().apply {
-                        alpha(1.0f)
-                        duration = displayDurationOfOtherViewWidget
-                    }
-                    endViewBinding.resultTimeContainer.animate().apply {
-                        alpha(1.0f)
-                        duration = displayDurationOfOtherViewWidget
+        endViewBinding.gameEndMenuButtonContainer.alpha = 0.0f
+        val endGameFragment =
+            when (gameMode) {
+                GameMode.MULTIPLE ->  {
+                    if(winner == null) {
+                        MultipleGameEndFragment.newInstance()
+                    } else {
+                        MultipleGameEndFragment.newInstance(winner.name, winner.color)
                     }
                 }
+                else -> SingleGameEndFragment.newInstance()
             }
+        endGameFragment.setGameEndViewReceiver(this)
+        (view as ConstraintLayout).addView(endViewBinding.root)
+        childFragmentManager.beginTransaction().let { fm ->
+            fm.replace(endViewBinding.frameGameEndMain.id, endGameFragment)
+            fm.commitNow()
         }
+
+        return endGameFragment.id
     }
 
     inner class AnimationAdapter(
         private val targetCardView: CardView,
         private val imageBitmap: Bitmap,
         private val isHalf: Boolean,
-        private val gameMessage: GameMessage
+        private val gameMessage: GameMessage,
+        private val cardIndex: Int
     ): Animation.AnimationListener {
         override fun onAnimationStart(p0: Animation?) {
             Log.d(javaClass.simpleName, "Animation Start")
@@ -328,7 +324,7 @@ class GameMainFragment : Fragment() {
                 animation.duration = 300
                 animation.fillAfter = true
                 animation.setAnimationListener(
-                    AnimationAdapter(targetCardView, imageBitmap,false,gameMessage))
+                    AnimationAdapter(targetCardView, imageBitmap,false,gameMessage,cardIndex))
 
                 val imageView = (targetCardView.children.first() as CardView).children.first() as ImageView
                 when(gameMessage) {
@@ -346,7 +342,18 @@ class GameMainFragment : Fragment() {
                 targetCardView.startAnimation(animation)
 
             } else {
-                viewModel.unlockCardHandle()
+                when(gameMessage) {
+                    is GameMessage.Open -> {
+                        viewModel.openedCard()
+                    }
+
+                    is GameMessage.Close -> {
+                        viewModel.closedCard(cardIndex)
+                    }
+                    else -> {
+                        Log.w(javaClass.simpleName, "Unexpected Card State")
+                    }
+                }
             }
         }
 
@@ -354,9 +361,17 @@ class GameMainFragment : Fragment() {
             Log.d(javaClass.simpleName, "Animation Repeat")
         }
     }
+
+    override fun notifyFinishAnimation() {
+        Log.d(javaClass.simpleName, "notifyFinishAnimation")
+        endViewBinding.gameEndMenuButtonContainer.animate().apply {
+            alpha(1.0f)
+            duration = 500L
+        }
+    }
 }
 
-fun CardView.onCardAction(fragment: GameMainFragment, imageBitmap: Bitmap, isHalf: Boolean, gameMessage: GameMessage) {
+fun CardView.onCardAction(fragment: GameMainFragment, imageBitmap: Bitmap, isHalf: Boolean, gameMessage: GameMessage, cardIndex: Int) {
     val scale = ScaleAnimation(1.0f,
         0.0f,
         1.0f,
@@ -376,7 +391,8 @@ fun CardView.onCardAction(fragment: GameMainFragment, imageBitmap: Bitmap, isHal
             this,
             imageBitmap,
             isHalf,
-            gameMessage)
+            gameMessage,
+            cardIndex)
         )
     startAnimation(animation)
 }

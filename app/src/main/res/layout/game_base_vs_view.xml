@@ -7,14 +7,24 @@
     android:layout_height="match_parent">
 
     <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/vsFragmentContainer"
+        android:name="net.wackwack.pic_card_memory.view.game.PlayerStatusFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeFragmentContainer"
+        tools:layout="@layout/fragment_player_status" />
+
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/timeFragmentContainer"
         android:name="net.wackwack.pic_card_memory.view.game.ElapsedTimeFragment"
-        tools:layout="@layout/fragment_elapsed_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_elapsed_time" />
 
     <FrameLayout
         android:id="@+id/gameMainContainer"
@@ -24,7 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeFragmentContainer">
+        app:layout_constraintTop_toBottomOf="@+id/vsFragmentContainer">
 
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
