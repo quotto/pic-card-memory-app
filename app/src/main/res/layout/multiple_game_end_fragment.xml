@@ -8,23 +8,24 @@
     android:background="@android:color/transparent"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".view.game.SingleGameEndFragment">
+    tools:context=".game.view.SingleGameEndFragment">
 
     <TextView
         android:id="@+id/labelWinnerTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:fontFamily="@font/jkg"
         android:text="@string/text_of_Winner"
         android:textColor="@color/white"
         android:textSize="38sp"
-        app:layout_constraintBottom_toTopOf="@+id/textWinnerPlayerName"
+        app:layout_constraintBottom_toTopOf="@+id/textWinnerName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Winner" />
 
     <LinearLayout
-        android:id="@+id/textWinnerPlayerName"
+        android:id="@+id/textWinnerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

@@ -27,4 +27,13 @@
     <string name="text_of_Winner">Winner</string>
     <string name="label_of" />
     <string name="label_of_score">スコア</string>
+    <string name="text_of_computerPlayButton">コンピューターと対戦</string>
+    <string name="text_of_level_0">弱い</string>
+    <string name="text_of_computerLevelSelectionText">コンピューターの強さを選んでください</string>
+    <string name="text_of_level_1">普通</string>
+    <string name="text_of_level_2">強い</string>
+    <string name="text_of_player1Name">P1</string>
+    <string name="text_of_player2Name">P2</string>>
+    <string name="text_of_youName">あなた</string>
+    <string name="text_of_comName">COM</string>>
 </resources>

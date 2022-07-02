@@ -8,7 +8,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/vsFragmentContainer"
-        android:name="net.wackwack.pic_card_memory.view.game.PlayerStatusFragment"
+        android:name="net.wackwack.pic_card_memory.game.view.PlayerStatusFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,7 +18,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/timeFragmentContainer"
-        android:name="net.wackwack.pic_card_memory.view.game.ElapsedTimeFragment"
+        android:name="net.wackwack.pic_card_memory.game.view.ElapsedTimeFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"

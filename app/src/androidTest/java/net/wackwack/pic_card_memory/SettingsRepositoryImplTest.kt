@@ -5,15 +5,14 @@ import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import net.wackwack.pic_card_memory.model.ImagePathType
-import net.wackwack.pic_card_memory.model.NumOfCard
-import net.wackwack.pic_card_memory.repository.SettingsRepositoryImpl
+import net.wackwack.pic_card_memory.settings.model.ImagePathType
+import net.wackwack.pic_card_memory.settings.model.NumOfCard
+import net.wackwack.pic_card_memory.settings.repository.SettingsRepositoryImpl
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 @SmallTest
 class SettingsRepositoryImplTest {
     private val settingsRepositoryImpl = SettingsRepositoryImpl(ApplicationProvider.getApplicationContext())

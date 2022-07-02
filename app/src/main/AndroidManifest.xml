@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.wackwack.pic_card_memory">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,10 +14,10 @@
         android:theme="@style/Theme.CardShuffle.NoActionBar"
         android:name=".PicCardMemoryApplication">
         <activity
-            android:name="net.wackwack.pic_card_memory.view.game.DetailImageActivity"
+            android:name="net.wackwack.pic_card_memory.game.view.DetailImageActivity"
             android:exported="false" />
         <activity
-            android:name="net.wackwack.pic_card_memory.view.main.MainActivity"
+            android:name="net.wackwack.pic_card_memory.menu.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +25,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.wackwack.pic_card_memory.view.SettingsActivity"
+            android:name="net.wackwack.pic_card_memory.settings.view.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"/>
         <activity
-            android:name="net.wackwack.pic_card_memory.view.game.GameActivity"
+            android:name="net.wackwack.pic_card_memory.game.view.GameActivity"
             android:exported="true"
             android:screenOrientation="portrait"/>
     </application>
