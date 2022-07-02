@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentComputerLevel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorSecondaryVariant"
+    tools:context=".menu.view.SelectComputerLevelFragment">
+
+    <TextView
+        android:id="@+id/computerLevelSelectionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/jkg"
+        android:text="@string/text_of_computerLevelSelectionText"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/easyLevelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/activated"
+        android:fontFamily="@font/jkg"
+        android:text="@string/text_of_level_0"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/computerLevelSelectionText" />
+
+    <Button
+        android:id="@+id/normalLevelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/activated"
+        android:fontFamily="@font/jkg"
+        android:text="@string/text_of_level_1"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/easyLevelButton" />
+
+    <Button
+        android:id="@+id/hardLevelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/activated"
+        android:fontFamily="@font/jkg"
+        android:text="@string/text_of_level_2"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/normalLevelButton" />
+
+    <Button
+        android:id="@+id/backToMainFromGameMenuButtonFromComputerLevelSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/jkg"
+        android:text="@string/text_of_backButton"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hardLevelButton" />
+</androidx.constraintlayout.widget.ConstraintLayout>
