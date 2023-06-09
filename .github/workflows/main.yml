@@ -4,10 +4,10 @@ on:
   push:
     branches-ignore:
       - 'main'
-    paths-ignore:
-      - 'release/**'
+      - 'release'
   pull_request:
-    branches: [ release ]
+    branches:
+      - 'release'
   workflow_dispatch:
 
 jobs:
@@ -45,7 +45,7 @@ jobs:
           path: app/build/reports/jacoco/jacocoTestReportDebug
 
   ui-test:
-    if: github.event_name == 'pull_request' && github.ref == 'refs/heads/release'
+    if: github.event_name == 'pull_request' && github.ref_name == 'release'
     runs-on: ubuntu-latest
     steps:
       - uses: google-github-actions/setup-gcloud@master
