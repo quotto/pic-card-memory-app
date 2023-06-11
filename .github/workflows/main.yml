@@ -19,6 +19,19 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
+      - uses: google-github-actions/auth@v1
+        id: auth
+        with:
+          create_credentials_file: true
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: gcloud check
+        run: |
+          gcloud projects list
       - uses: actions/checkout@v2
 
       - name: Set up JDK 17
@@ -54,16 +67,19 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'release'
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/auth@v0.3.1
+      - uses: google-github-actions/auth@v1
         id: auth
         with:
           create_credentials_file: true
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
 
-      - name: gcloud login
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: gcloud check
         run: |
-          gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file }}"
+          gcloud projects list
 
       - uses: actions/checkout@v2
 
