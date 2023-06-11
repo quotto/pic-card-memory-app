@@ -92,12 +92,16 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
 
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+        with:
+          version: '>= 363.0.0'
+
       - name: UI test on Firebase TestLab
         run: |
           # Firebase CLIをインストールする
           curl -sL firebase.tools | bash
-          # TestLabでUIテストを実行する
-          firebase test android run --type instrumentation --app app-debug.apk --test app-debug-androidTest.apk \
+          gcloud firebase test android run --type instrumentation --app app-debug.apk --test app-debug-androidTest.apk \
           --device model=Pixel6,version=33,locale=en,orientation=portrait \
           --device model=Pixel6,version=31,locale=en,orientation=portrait \
           --device model=Pixel5,version=30,locale=en,orientation=portrait \
