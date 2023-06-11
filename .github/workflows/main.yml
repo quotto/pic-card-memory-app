@@ -28,6 +28,10 @@ jobs:
           distribution: 'adopt'
           cache: 'gradle'
 
+      - name: Create Google Service Account File
+        run: |
+          echo ${{ secrets.GOOGLE_SERVICE_JSON }} | base64 --decode > app/google-services.json
+
       - name: Create upload key
         run: |
           # Base64でエンコードされたキーストアファイルをシークレットからでコードする
@@ -50,16 +54,6 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'release'
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/auth@v1
-        id: auth
-        with:
-          create_credentials_file: true
-          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
-
       - uses: actions/checkout@v2
 
       - name: Create Google Service Account File
@@ -92,6 +86,11 @@ jobs:
           mv app/build/outputs/apk/androidTest/debug/*.apk app-debug-androidTest.apk
 
       - name: UI Test on Firebase TestLab
+        uses: google-github-actions/auth@v1
+        with:
+          create_credentials_file: true
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
         run: |
           gcloud firebase test android run --type instrumentation --app app-debug.apk --test app-debug-androidTest.apk \
           --device model=Pixel6,version=33,locale=en,orientation=portrait \
