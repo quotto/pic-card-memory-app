@@ -2,6 +2,7 @@ package net.wackwack.pic_card_memory
 
 import android.Manifest
 import android.app.Activity
+import android.os.Build
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -23,24 +24,32 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import net.wackwack.pic_card_memory.repository.SettingsRepositoryImpl
-import net.wackwack.pic_card_memory.view.game.GameActivity
-import net.wackwack.pic_card_memory.view.game.GameMainFragment
-import net.wackwack.pic_card_memory.view.main.MainActivity
+import net.wackwack.pic_card_memory.settings.repository.SettingsRepositoryImpl
+import net.wackwack.pic_card_memory.game.view.GameActivity
+import net.wackwack.pic_card_memory.game.view.GameMainFragment
+import net.wackwack.pic_card_memory.menu.view.MainActivity
 import org.junit.*
 import org.junit.runner.RunWith
 
 
-@RunWith(AndroidJUnit4::class)
 @LargeTest
 class BasicUseCaseTest {
     @get:Rule
     val activityRule = ActivityTestRule(MainActivity::class.java)
     @get:Rule
-    val mGrantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    )
+    val mGrantPermissionRule: GrantPermissionRule =
+       // テストを実行する端末のAPIが33以上であればREAD_MEDIA_IMAGESを許可する
+        // API33未満の場合はWRITE_EXTERNAL_STORAGEとREAD_EXTERNAL_STORAGEを許可する
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+            GrantPermissionRule.grant(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            )
+        } else {
+            GrantPermissionRule.grant(
+                Manifest.permission.READ_MEDIA_IMAGES,
+            )
+        }
 
     private var idlingResourceForLoading: CountingIdlingResource? = null
     private var idlingResourceForCountDown: CountingIdlingResource? = null
@@ -153,6 +162,65 @@ class BasicUseCaseTest {
         // プレーヤー1が先行であること
         onView(withId(R.id.imageArrowP1)).check(matches(isDisplayed()))
         onView(withId(R.id.imageArrowP2)).check(matches(withEffectiveVisibility(Visibility.INVISIBLE)))
+
+        // プレーヤー1の名前が「P1」であること
+        onView(withId(R.id.player1Name)).check(matches(withText("P1")))
+        // プレーヤー1のスコアが0であること
+        onView(withId(R.id.player1Score)).check(matches(withText("0")))
+        // プレーヤー2の名前が「P2」であること
+        onView(withId(R.id.player2Name)).check(matches(withText("P2")))
+        // プレーヤー2のスコアが0であること
+        onView(withId(R.id.player2Score)).check(matches(withText("0")))
+
+        runBlocking {
+            // 時間経過に伴いタイマーがインクリメントされること
+            delay(3000)
+            val elapsedTimeText = device.findObject(
+                UiSelector().textStartsWith("00:")
+            ).text
+
+            Assert.assertNotEquals("00:00",elapsedTimeText)
+        }
+    }
+
+    /**
+     * COM戦でゲームを開始するシナリオ
+     */
+    @Test
+    fun startGameComMode() {
+        onView(withId(R.id.startPlayButton)).perform(click())
+        onView(withId(R.id.fragmentSelectGameOption)).check(matches(isDisplayed()))
+        // COMと遊ぶをクリック
+        onView(withId(R.id.computerPlayButton)).perform(click())
+
+        // レベル選択画面が表示されること
+        onView(withId(R.id.fragmentComputerLevel)).check(matches(isDisplayed()))
+
+        // 強いを選択
+        onView(withId(R.id.hardLevelButton)).perform(click())
+
+        // 12枚×外部ストレージ全体の組み合わせでゲームが始まること
+        registerIdling()
+        onView(withId(R.id.cards12Container)).check(matches(isDisplayed()))
+
+        // カウントダウンのViewが消えたこと
+        onView(withId(R.id.countdownView)).check(doesNotExist())
+
+        // プレーヤースコアのコンテナが表示されていること
+        onView(withId(R.id.playerStatusContainer)).check(matches(isDisplayed()))
+
+        // ユーザーが先行であること
+        onView(withId(R.id.imageArrowP1)).check(matches(isDisplayed()))
+        onView(withId(R.id.imageArrowP2)).check(matches(withEffectiveVisibility(Visibility.INVISIBLE)))
+
+        // ユーザーの名前が「あなた」であること
+        onView(withId(R.id.player1Name)).check(matches(withText("あなた")))
+        // ユーザーのスコアが0であること
+        onView(withId(R.id.player1Score)).check(matches(withText("0")))
+        // COMの名前が「COM」であること
+        onView(withId(R.id.player2Name)).check(matches(withText("COM")))
+        // COMのスコアが0であること
+        onView(withId(R.id.player2Score)).check(matches(withText("0")))
 
         runBlocking {
             // 時間経過に伴いタイマーがインクリメントされること

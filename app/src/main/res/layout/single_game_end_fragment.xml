@@ -8,7 +8,7 @@
     android:background="@android:color/transparent"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".view.game.SingleGameEndFragment">
+    tools:context=".game.view.SingleGameEndFragment">
 
     <LinearLayout
         android:id="@+id/textGameClearTitle"
