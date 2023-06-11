@@ -117,7 +117,7 @@ class NormalComputerTest {
 
         // インデックス0,9のカードは選択されないことを確認
         val secondCardIndex = callSelectFirstCard(computer)
-        assert(secondCardIndex != 1 && secondCardIndex != 9)
+        assert(secondCardIndex != 0 && secondCardIndex != 9)
     }
 
     @Test

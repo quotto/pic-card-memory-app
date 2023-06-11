@@ -19,19 +19,6 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/auth@v1
-        id: auth
-        with:
-          create_credentials_file: true
-          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
-
-      - name: gcloud check
-        run: |
-          gcloud projects list
       - uses: actions/checkout@v2
 
       - name: Set up JDK 17
@@ -40,10 +27,6 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: 'gradle'
-
-      - name: Create Google Service Account File
-        run: |
-          echo ${{ secrets.GOOGLE_SERVICE_JSON }} | base64 --decode > app/google-services.json
 
       - name: Create upload key
         run: |
@@ -77,10 +60,6 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
 
-      - name: gcloud check
-        run: |
-          gcloud projects list
-
       - uses: actions/checkout@v2
 
       - name: Set up JDK 17
@@ -89,6 +68,16 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: 'gradle'
+
+      - name: Create upload key
+        run: |
+          # Base64でエンコードされたキーストアファイルをシークレットからでコードする
+          echo ${{ secrets.KEYSTORE }} | base64 --decode > keystore.jks
+          # シークレットからキーストア関連情報を読み取りlocal.propertiesに書き込む
+          echo "keystore.file=keystore.jks" >> local.properties
+          echo "keystore.password=${{ secrets.STORE_PASSWORD }}" >> local.properties
+          echo "keystore.alias=${{ secrets.KEY_ALIAS }}" >> local.properties
+          echo "keystore.keypwd=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
       - name: Build Debug
         run: |
