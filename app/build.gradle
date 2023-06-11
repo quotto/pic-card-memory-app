@@ -8,6 +8,14 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'com.google.gms.google-services'
 
+// アプリのバージョンをversion.propertiesから取得
+def versionProps = new Properties()
+versionProps.load(project.rootProject.file('version.properties').newDataInputStream())
+def majorVersion = versionProps.getProperty('version.major')
+def minorVersion = versionProps.getProperty('version.minor')
+// パッチバージョンはパラメータが与えられている場合はそちらを優先し、無い場合はversion.propertiesから取得する
+def patchVersion = project.hasProperty('patchVersion') ? project.getProperty('patchVersion') : versionProps.getProperty('version.patch')
+
 android {
     signingConfigs {
         release {
@@ -27,8 +35,9 @@ android {
         minSdk 23
         targetSdk 33
         versionCode 3
-        versionName "1.1"
+        versionName "${majorVersion}.${minorVersion}.${patchVersion}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        archivesBaseName = "app-${defaultConfig.versionName}"
     }
 
     lintOptions {
@@ -40,11 +49,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-        }
-    }
-    variantFilter {variant->
-        if(variant.buildType.name == "release") {
-            archivesBaseName = "${defaultConfig.applicationId}-${defaultConfig.versionName}"
         }
     }
     compileOptions {

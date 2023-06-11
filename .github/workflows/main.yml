@@ -85,10 +85,11 @@ jobs:
 
       - name: Build Debug
         run: |
-          ./gradlew assembleDebug
-          mv app/build/outputs/apk/debug/app-debug.apk app-debug.apk
-          ./gradlew assembleAndroidTest
-          mv app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk app-debug-androidTest.apk
+          # ビルド番号をパッチバージョンに指定してビルドする
+          ./gradlew assembleDebug -PpatchVersion=${{ github.run_number }}
+          mv app/build/outputs/apk/debug/*.apk app-debug.apk
+          ./gradlew assembleAndroidTest -PpatchVersion=${{ github.run_number }}
+          mv app/build/outputs/apk/androidTest/debug/*.apk app-debug-androidTest.apk
 
       - name: UI Test on Firebase TestLab
         run: |
@@ -128,7 +129,11 @@ jobs:
       - name: Build Release
         run: ./gradlew assembleRelease
 
-      - name: Upload to Play Console
-        run: |
-          echo ${{ secrets.PLAY_CONSOLE_KEY }} | base64 --decode > key.json
-          ./gradlew publishReleaseBundle --track=production --key-file=key.json --service-account-email=${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+      - name: Upload to Google Play
+        uses: sokchanbo/android-upload-google-play@v1.0.0
+        with:
+          service-account: ${{ secrets.PLAY_CONSOLE_SERVICE_ACCOUNT }}
+          package-name: net.wackwack.pic_card_memory
+          release-file: app/build/outputs/bundle/release/*.aab
+          track: beta
+          mapping-file: app/build/outputs/mapping/release/mapping.txt
