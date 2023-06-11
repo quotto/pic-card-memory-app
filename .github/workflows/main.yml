@@ -85,14 +85,22 @@ jobs:
           ./gradlew assembleAndroidTest -PpatchVersion=${{ github.run_number }}
           mv app/build/outputs/apk/androidTest/debug/*.apk app-debug-androidTest.apk
 
-      - name: UI Test on Firebase TestLab
+      - name: Install Firebase CLI
+        run: |
+          # Firebase CLIをインストールする
+          curl -sL firebase.tools | bash
+
+      - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
           create_credentials_file: true
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+
+      - name: UI test on Firebase TestLab
+        uses: google-github-actions/setup-gcloud@master
         run: |
-          gcloud firebase test android run --type instrumentation --app app-debug.apk --test app-debug-androidTest.apk \
+          firebase test android run --type instrumentation --app app-debug.apk --test app-debug-androidTest.apk \
           --device model=Pixel6,version=33,locale=en,orientation=portrait \
           --device model=Pixel6,version=31,locale=en,orientation=portrait \
           --device model=Pixel5,version=30,locale=en,orientation=portrait \
