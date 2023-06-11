@@ -58,7 +58,7 @@ jobs:
         id: auth
         with:
           create_credentials_file: true
-          workload_identity_pool: ${{ secrets.WORKLOAD_IDENTITY_POOL }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
 
       - name: gcloud login
