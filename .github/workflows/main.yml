@@ -127,9 +127,10 @@ jobs:
           # Base64でエンコードされたキーストアファイルをシークレットからでコードする
           echo ${{ secrets.KEYSTORE }} | base64 --decode > keystore.jks
           # シークレットからキーストア関連情報を読み取りlocal.propertiesに書き込む
-          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> local.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> local.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> local.properties
+          echo "keystore.file=keystore.jks" >> local.properties
+          echo "keystore.storepwd=${{ secrets.STORE_PASSWORD }}" >> local.properties
+          echo "keystore.alias=${{ secrets.KEY_ALIAS }}" >> local.properties
+          echo "keystore.keypwd=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
       - name: Build Release
         run: |
