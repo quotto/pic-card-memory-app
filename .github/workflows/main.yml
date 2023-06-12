@@ -4,7 +4,6 @@ on:
   push:
     branches-ignore:
       - 'main'
-      - 'release'
   pull_request:
     branches:
       - 'release'
@@ -16,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref != 'refs/heads/release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -107,7 +106,7 @@ jobs:
           --device model=Nexus5,version=21,locale=en,orientation=portrait
 
   release:
-    if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'release' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    if: github.event_name == 'push' && github.ref == 'refs/heads/release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
