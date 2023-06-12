@@ -34,7 +34,7 @@ android {
         applicationId "net.wackwack.pic_card_memory"
         minSdk 23
         targetSdk 33
-        versionCode 4
+        versionCode 5
         versionName "${majorVersion}.${minorVersion}.${patchVersion}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "app-${defaultConfig.versionName}"
