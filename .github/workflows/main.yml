@@ -35,10 +35,10 @@ jobs:
       - name: Create upload key
         run: |
           # Base64でエンコードされたキーストアファイルをシークレットからでコードする
-          echo ${{ secrets.KEYSTORE }} | base64 --decode > keystore.jks
+          echo ${{ secrets.KEYSTORE }} | base64 --decode > app/keystore.jks
           # シークレットからキーストア関連情報を読み取りlocal.propertiesに書き込む
           echo "keystore.file=keystore.jks" >> local.properties
-          echo "keystore.password=${{ secrets.STORE_PASSWORD }}" >> local.properties
+          echo "keystore.storepwd=${{ secrets.STORE_PASSWORD }}" >> local.properties
           echo "keystore.alias=${{ secrets.KEY_ALIAS }}" >> local.properties
           echo "keystore.keypwd=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
@@ -73,7 +73,7 @@ jobs:
           echo ${{ secrets.KEYSTORE }} | base64 --decode > keystore.jks
           # シークレットからキーストア関連情報を読み取りlocal.propertiesに書き込む
           echo "keystore.file=keystore.jks" >> local.properties
-          echo "keystore.password=${{ secrets.STORE_PASSWORD }}" >> local.properties
+          echo "keystore.storepwd=${{ secrets.STORE_PASSWORD }}" >> local.properties
           echo "keystore.alias=${{ secrets.KEY_ALIAS }}" >> local.properties
           echo "keystore.keypwd=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
@@ -107,7 +107,7 @@ jobs:
           --device model=Nexus5,version=21,locale=en,orientation=portrait
 
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/release'
+    if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'release' && github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -133,13 +133,16 @@ jobs:
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
       - name: Build Release
-        run: ./gradlew assembleRelease
+        run: |
+          # ビルド番号からパッチバージョンを取得する
+          ./gradlew bundleRelease --PpatchVersion=${{ github.run_number }}
+          # 生成されたaabファイル名を環境変数に格納する
+          echo "RELEASE_FILE=$(ls app/build/outputs/bundle/release/*.aab)" >> $GITHUB_ENV
 
       - name: Upload to Google Play
-        uses: sokchanbo/android-upload-google-play@v1.0.0
+        uses: r0adkll/upload-google-play@v1
         with:
-          service-account: ${{ secrets.PLAY_CONSOLE_SERVICE_ACCOUNT }}
-          package-name: net.wackwack.pic_card_memory
-          release-file: app/build/outputs/bundle/release/*.aab
-          track: beta
-          mapping-file: app/build/outputs/mapping/release/mapping.txt
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_CONSOLE_SERVICE_ACCOUNT }}
+          packageName: net.wackwack.pic_card_memory
+          releaseFiles: ${{ env.RELEASE_FILE }}
+          track: internal
