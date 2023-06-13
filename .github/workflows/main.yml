@@ -132,10 +132,10 @@ jobs:
           echo "keystore.alias=${{ secrets.KEY_ALIAS }}" >> local.properties
           echo "keystore.keypwd=${{ secrets.KEY_PASSWORD }}" >> local.properties
 
-      - name: Build Release
+      - name: Bundle Release
         run: |
           # ビルド番号からパッチバージョンを取得する
-          ./gradlew bundleRelease --PpatchVersion=${{ github.run_number }}
+          ./gradlew bundleRelease -PpatchVersion=${{ github.run_number }}
           # 生成されたaabファイル名を環境変数に格納する
           echo "RELEASE_FILE=$(ls app/build/outputs/bundle/release/*.aab)" >> $GITHUB_ENV
 
