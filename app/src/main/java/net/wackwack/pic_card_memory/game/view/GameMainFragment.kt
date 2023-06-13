@@ -40,7 +40,6 @@ import net.wackwack.pic_card_memory.game.viewmodel.CardStatus
 
 @AndroidEntryPoint
 class GameMainFragment : Fragment(), GameEndViewReceiver {
-
     companion object {
         fun newInstance(gameMode: String) = GameMainFragment().apply {
             arguments = Bundle().apply {
@@ -102,6 +101,11 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // カードの裏面のビットマップを取得する
+        val cardBackImageBitmap = BitmapFactory.decodeResource(
+            resources,
+            R.drawable.card_back
+        )
 
         lifecycleScope.launch{
             repeatOnLifecycle(Lifecycle.State.STARTED)  {
@@ -118,11 +122,6 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
                             view?.let { view ->
                                 val firstCard =
                                     view.findViewWithTag<CardView>("card${gameMessage.target.first}")
-                                // カードの裏面のビットマップを取得する
-                                val cardBackImageBitmap = BitmapFactory.decodeResource(
-                                    resources,
-                                    R.drawable.card_back
-                                )
                                 firstCard.onCardAction(
                                     cardBackImageBitmap,
                                 ) { viewModel.doneCloseCard(gameMessage.target.first) }
@@ -183,15 +182,15 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
                         is GameMessage.NextPlayer -> {
                             // コンピューター対戦で次のプレーヤーがコンピューターの場合はカードのタップを無効にする
                             if (gameMessage.nextPlayer.type == PlayerType.COMPUTER) {
+                                Log.d(javaClass.simpleName, "Disable Cards}")
                                 viewModel.imageCards.forEachIndexed { index, _ ->
-                                    Log.d(javaClass.simpleName, "Disable Card@${index}")
                                     val card =
                                         findCardViewByIndex(index).children.first() as ImageView
                                     card.isClickable = false
                                 }
                             } else {
+                                Log.d(javaClass.simpleName, "Enable Cards}")
                                 viewModel.imageCards.forEachIndexed { index, _ ->
-                                    Log.d(javaClass.simpleName, "Enable Card@${index}")
                                     val card =
                                         findCardViewByIndex(index).children.first() as ImageView
                                     card.isClickable = true
@@ -415,6 +414,8 @@ class DuringCardActionAdapter(
         )
 
         val imageView = (targetCardView.children.first() as CardView).children.first() as ImageView
+        // imageViewの現在の画像をメモリから解放
+        imageView.setImageDrawable(null)
         imageView.setImageBitmap(imageBitmap)
         targetCardView.startAnimation(animation)
 
