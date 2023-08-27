@@ -17,13 +17,13 @@ android {
             keyPassword properties.getProperty("keystore.keypwd")
         }
     }
+    compileSdk 33
 
-    compileSdk 31
 
     defaultConfig {
         applicationId "net.wackwack.pic_card_memory"
         minSdk 23
-        targetSdk 31
+        targetSdk 33
         versionCode 3
         versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
