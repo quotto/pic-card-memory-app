@@ -6,6 +6,9 @@ import android.content.Context
 import android.provider.MediaStore
 import android.util.Log
 import androidx.test.core.app.ApplicationProvider
+import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StreamDownloadTask
 import com.google.firebase.storage.ktx.storage

@@ -5,7 +5,7 @@
     android:id="@+id/fragmentMainMenuOption"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context=".view.main.MainButtonFragment">
+    tools:context=".menu.view.MainButtonFragment">
 
     <Button
         android:id="@+id/startPlayButton"
