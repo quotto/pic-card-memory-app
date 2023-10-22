@@ -36,7 +36,7 @@ class GameViewModel @Inject  constructor(
     val imageCards: List<ImageCard>
         get() = _imageCards
     private val _cardOperationMutex  = Mutex()
-    private val _message = MutableSharedFlow<GameMessage>(replay = 1)
+    private val _message = MutableSharedFlow<GameMessage>(replay = 0)
     val message: SharedFlow<GameMessage> = _message
     private val _elapsedTime = MutableStateFlow<Long>(0)
     val elapsedTime: StateFlow<Long> = _elapsedTime
@@ -45,9 +45,9 @@ class GameViewModel @Inject  constructor(
         get() = _players.value[0].name
     val player2Name: String
         get() = _players.value[1].name
-    private val _player1Score = MutableStateFlow<Int>(0)
+    private val _player1Score = MutableStateFlow(0)
     val player1Score: StateFlow<Int> = _player1Score.asStateFlow()
-    private val _player2Score = MutableStateFlow<Int>(0)
+    private val _player2Score = MutableStateFlow(0)
     val player2Score: StateFlow<Int> = _player2Score.asStateFlow()
     private val _currentPlayerIndex = MutableStateFlow(0)
     val currentPlayerIndex: StateFlow<Int> = _currentPlayerIndex
@@ -90,6 +90,7 @@ class GameViewModel @Inject  constructor(
                             }
                         )
                     }
+                    Log.d(javaClass.simpleName, "Emitted: Start Game")
                     _message.emit(GameMessage.Start)
                 }
             } catch(e: InsufficientImagesException) {
