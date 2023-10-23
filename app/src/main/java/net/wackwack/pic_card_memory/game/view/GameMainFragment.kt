@@ -99,132 +99,128 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // カードの裏面のビットマップを取得する
-        val cardBackImageBitmap = BitmapFactory.decodeResource(
-            resources,
-            R.drawable.card_back
-        )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(javaClass.simpleName, "onViewCreated")
+        if(viewModel.imageCards.isEmpty()) {
+            // カードの裏面のビットマップを取得する
+            val cardBackImageBitmap = BitmapFactory.decodeResource(
+                resources,
+                R.drawable.card_back
+            )
 
-        lifecycleScope.launch{
-            repeatOnLifecycle(Lifecycle.State.STARTED)  {
-                viewModel.message.collect { gameMessage ->
-                    Log.d(javaClass.simpleName, "Message received")
-                    when (gameMessage) {
-                        is GameMessage.DoClose -> {
-                            Log.d(
-                                javaClass.simpleName,
-                                "Close Card@${gameMessage.target.first},${gameMessage.target.second}"
-                            )
-                            // 2枚目を開いてから閉じるまで少し間隔をあける
-                            delay(500)
-                            view?.let { view ->
-                                val firstCard =
-                                    view.findViewWithTag<CardView>("card${gameMessage.target.first}")
-                                firstCard.onCardAction(
-                                    cardBackImageBitmap,
-                                ) { viewModel.doneCloseCard(gameMessage.target.first) }
-                                val secondCard =
-                                    view.findViewWithTag("card${gameMessage.target.second}") as CardView
-                                secondCard.onCardAction(
-                                    cardBackImageBitmap,
-                                ) { viewModel.doneCloseCard(gameMessage.target.second) }
-                            }
-                        }
-
-                        is GameMessage.DoOpen -> {
-                            Log.d(javaClass.simpleName, "Open Card@${gameMessage.target}")
-                            view?.let { view ->
-                                val card = view.findViewWithTag<CardView>("card${gameMessage.target}")
-                                card.onCardAction(
-                                    viewModel.imageCards[gameMessage.target].bitmap,
-                                ){ viewModel.doneOpenCard() }
-                            }
-                        }
-
-                        is GameMessage.Start -> {
-                            Log.d(javaClass.simpleName, "Start Game")
-                            setAllCardViewImage()
-                            showCountDown()
-
-                            // カードの配置が終わったらアイドリング状態にする
-                            countingIdlingResourceForLoading.decrement()
-
-                            // ゲームモードがコンピューター対戦の場合はComputerInterfaceを生成する
-                            if (gameMode == GameMode.COM) {
-                                val computerLevel = arguments?.getString(PARAM_COMPUTER_LEVEL)
-                                    ?: ComputerLevel.EASY.toString()
-                                Log.d(javaClass.simpleName, "Create Computer: level is $computerLevel")
-                                computer = ComputerFactory.createComputer(
-                                    ComputerLevel.valueOf(computerLevel),
-                                    viewModel
+            viewLifecycleOwner.lifecycleScope.launch{
+                repeatOnLifecycle(Lifecycle.State.STARTED)  {
+                    viewModel.message.collect { gameMessage ->
+                        Log.d(javaClass.simpleName, "Message received")
+                        when (gameMessage) {
+                            is GameMessage.DoClose -> {
+                                Log.d(
+                                    javaClass.simpleName,
+                                    "Close Card@${gameMessage.target.first},${gameMessage.target.second}"
                                 )
-                            }
-                        }
-
-                        is GameMessage.GameEnd -> {
-                            Log.d(javaClass.simpleName, "Game Clear")
-                            val fragmentId = showGameEndView(gameMessage.winner)
-                            endViewBinding.retryButton.setOnClickListener {
-                                childFragmentManager.findFragmentById(fragmentId)?.let {
-                                    childFragmentManager.beginTransaction().remove(it).commitNow()
-
-                                    (view as ConstraintLayout).removeView(endViewBinding.root)
-                                    showLoadViewAndStartGame()
+                                // 2枚目を開いてから閉じるまで少し間隔をあける
+                                delay(500)
+                                view.let { view ->
+                                    val firstCard =
+                                        view.findViewWithTag<CardView>("card${gameMessage.target.first}")
+                                    firstCard.onCardAction(
+                                        cardBackImageBitmap,
+                                    ) { viewModel.doneCloseCard(gameMessage.target.first) }
+                                    val secondCard =
+                                        view.findViewWithTag("card${gameMessage.target.second}") as CardView
+                                    secondCard.onCardAction(
+                                        cardBackImageBitmap,
+                                    ) { viewModel.doneCloseCard(gameMessage.target.second) }
                                 }
                             }
-                            endViewBinding.backToMainFromGameButton.setOnClickListener {
+
+                            is GameMessage.DoOpen -> {
+                                Log.d(javaClass.simpleName, "Open Card@${gameMessage.target}")
+                                view.let { view ->
+                                    val card = view.findViewWithTag<CardView>("card${gameMessage.target}")
+                                    card.onCardAction(
+                                        viewModel.imageCards[gameMessage.target].bitmap,
+                                    ){ viewModel.doneOpenCard() }
+                                }
+                            }
+
+                            is GameMessage.Start -> {
+                                Log.d(javaClass.simpleName, "Start Game")
+                                setAllCardViewImage()
+                                showCountDown()
+
+                                // カードの配置が終わったらアイドリング状態にする
+                                countingIdlingResourceForLoading.decrement()
+
+                                // ゲームモードがコンピューター対戦の場合はComputerInterfaceを生成する
+                                if (gameMode == GameMode.COM) {
+                                    val computerLevel = arguments?.getString(PARAM_COMPUTER_LEVEL)
+                                        ?: ComputerLevel.EASY.toString()
+                                    Log.d(javaClass.simpleName, "Create Computer: level is $computerLevel")
+                                    computer = ComputerFactory.createComputer(
+                                        ComputerLevel.valueOf(computerLevel),
+                                        viewModel
+                                    )
+                                }
+                            }
+
+                            is GameMessage.GameEnd -> {
+                                Log.d(javaClass.simpleName, "Game Clear")
+                                val fragmentId = showGameEndView(gameMessage.winner)
+                                endViewBinding.retryButton.setOnClickListener {
+                                    childFragmentManager.findFragmentById(fragmentId)?.let {
+                                        childFragmentManager.beginTransaction().remove(it).commitNow()
+
+                                        (view as ConstraintLayout).removeView(endViewBinding.root)
+                                        showLoadViewAndStartGame()
+                                    }
+                                }
+                                endViewBinding.backToMainFromGameButton.setOnClickListener {
+                                    activity?.finish()
+                                }
+                            }
+
+                            is GameMessage.NextPlayer -> {
+                                // コンピューター対戦で次のプレーヤーがコンピューターの場合はカードのタップを無効にする
+                                if (gameMessage.nextPlayer.type == PlayerType.COMPUTER) {
+                                    Log.d(javaClass.simpleName, "Disable Cards}")
+                                    viewModel.imageCards.forEachIndexed { index, _ ->
+                                        val card =
+                                            findCardViewByIndex(index).children.first() as ImageView
+                                        card.isClickable = false
+                                    }
+                                } else {
+                                    Log.d(javaClass.simpleName, "Enable Cards}")
+                                    viewModel.imageCards.forEachIndexed { index, _ ->
+                                        val card =
+                                            findCardViewByIndex(index).children.first() as ImageView
+                                        card.isClickable = true
+                                    }
+                                }
+                            }
+
+                            is GameMessage.Error -> {
+                                if (gameMessage.exception.javaClass.simpleName == InsufficientImagesException::class.simpleName) {
+                                    Toast.makeText(context, "写真の数が足りません", Toast.LENGTH_LONG).show()
+                                } else {
+                                    Toast.makeText(context, "エラーが発生しました", Toast.LENGTH_LONG).show()
+                                }
                                 activity?.finish()
                             }
-                        }
 
-                        is GameMessage.NextPlayer -> {
-                            // コンピューター対戦で次のプレーヤーがコンピューターの場合はカードのタップを無効にする
-                            if (gameMessage.nextPlayer.type == PlayerType.COMPUTER) {
-                                Log.d(javaClass.simpleName, "Disable Cards}")
-                                viewModel.imageCards.forEachIndexed { index, _ ->
-                                    val card =
-                                        findCardViewByIndex(index).children.first() as ImageView
-                                    card.isClickable = false
-                                }
-                            } else {
-                                Log.d(javaClass.simpleName, "Enable Cards}")
-                                viewModel.imageCards.forEachIndexed { index, _ ->
-                                    val card =
-                                        findCardViewByIndex(index).children.first() as ImageView
-                                    card.isClickable = true
-                                }
+                            is GameMessage.DoneOpen -> {
+                                Log.d(javaClass.simpleName, "Done Open, not any ui reaction")
                             }
-                        }
 
-                        is GameMessage.Error -> {
-                            if (gameMessage.exception.javaClass.simpleName == InsufficientImagesException::class.simpleName) {
-                                Toast.makeText(context, "写真の数が足りません", Toast.LENGTH_LONG).show()
-                            } else {
-                                Toast.makeText(context, "エラーが発生しました", Toast.LENGTH_LONG).show()
-                            }
-                            activity?.finish()
                         }
-
-                        is GameMessage.DoneOpen -> {
-                            Log.d(javaClass.simpleName, "Done Open, not any ui reaction")
+                        if (gameMode == GameMode.COM) {
+                            // コンピューター対戦の場合はコンピューターのターンを開始する
+                            computer.action(gameMessage)
                         }
-
-                    }
-                    if (gameMode == GameMode.COM) {
-                        // コンピューター対戦の場合はコンピューターのターンを開始する
-                        computer.action(gameMessage)
                     }
                 }
             }
-        }
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if(viewModel.imageCards.isEmpty()) {
             // ViewModelのカードサイズが0の場合は開始前なので開始処理を行う
             showLoadViewAndStartGame()
         } else {
@@ -295,43 +291,43 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
         }
     }
 
-    private fun showCountDown() {
+    private fun decrementCountDown(count: Int, pastCount: Int) {
+        try {
+            viewLifecycleOwner.lifecycleScope.ensureActive()
+        } catch (e: IllegalStateException) {
+            Log.w(
+                javaClass.simpleName,
+                e.message.toString()
+            )
+            Log.w(javaClass.simpleName, e.stackTraceToString())
+            return
+        }
+        if(count < pastCount) {
+            (view as ConstraintLayout).removeView(
+                countdownViewBinding.root
+            )
+            countingIdlingResourceForCountDown.decrement()
+            viewModel.startTimer()
+            return
+        }
+        Log.d(javaClass.simpleName, "countDown: ${count-pastCount}")
+        countdownViewBinding.textCountDown.text = if(count == pastCount) "スタート！！" else (count - pastCount).toString()
+        countdownViewBinding.textCountDown.animate().apply {
+            duration = 1000L
+            withEndAction {
+                decrementCountDown(count, pastCount + 1)
+            }
+            start()
+        }
+
+    }
+
+    private fun showCountDown(count: Int = 3) {
         countingIdlingResourceForCountDown.increment()
         (view as ConstraintLayout).removeView(gameLoadingViewBinding.root)
         countdownViewBinding.root.layoutParams = gameMainContainerLayoutParams
         (view as ConstraintLayout).addView(countdownViewBinding.root)
-
-        countdownViewBinding.textCountDown.text = "3"
-        countdownViewBinding.textCountDown.animate().apply {
-            duration = 1000L
-            withEndAction {
-                countdownViewBinding.textCountDown.text = "2"
-                countdownViewBinding.textCountDown.animate().apply {
-                    duration = 1000L
-                    withEndAction {
-                        countdownViewBinding.textCountDown.text = "1"
-                        countdownViewBinding.textCountDown.animate().apply {
-                            duration = 1000L
-                            withEndAction {
-                                countdownViewBinding.textCountDown.text = "スタート！！"
-                                countdownViewBinding.textCountDown.animate().apply {
-                                    duration = 1000L
-                                    withEndAction {
-                                        (view as ConstraintLayout).removeView(countdownViewBinding.root)
-                                        countingIdlingResourceForCountDown.decrement()
-                                        viewModel.startTimer()
-                                    }
-                                    start()
-                                }
-                            }
-                            start()
-                        }
-                    }
-                    start()
-                }
-            }
-            start()
-        }
+        decrementCountDown(count, 0)
     }
 
     private fun showGameEndView(winner: Player?): Int {
