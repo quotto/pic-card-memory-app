@@ -1,5 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
+    ext {
+        agp_version = '8.1.1'
+    }
     ext.hlt_version= '2.46.1'
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hlt_version"

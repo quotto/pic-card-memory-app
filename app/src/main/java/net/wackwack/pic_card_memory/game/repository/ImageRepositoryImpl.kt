@@ -38,7 +38,7 @@ class ImageRepositoryImpl @Inject constructor(@ApplicationContext val context: C
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             context.contentResolver.loadThumbnail(Uri.parse(card.uriString), Size(640, 480),null)
         } else {
-            MediaStore.Images.Media.getBitmap(context.contentResolver,Uri.parse(card.uriString))
+        MediaStore.Images.Media.getBitmap(context.contentResolver,Uri.parse(card.uriString))
         }
     }
 
@@ -110,7 +110,7 @@ class ImageRepositoryImpl @Inject constructor(@ApplicationContext val context: C
         val secureRandom = SecureRandom()
         (0 until requiredIndex).forEach { _ ->
             while (true) {
-                val rand = secureRandom.nextInt(size-1)
+                val rand = secureRandom.nextInt(size)
                 if (!selections.contains(rand)) {
                     selections.add(rand)
                     break

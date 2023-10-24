@@ -1,9 +1,11 @@
 package net.wackwack.pic_card_memory.game.usecase
 
+import android.util.Log
 import kotlinx.coroutines.flow.*
 import net.wackwack.pic_card_memory.game.model.Card
 import net.wackwack.pic_card_memory.game.model.GameBoard
 import net.wackwack.pic_card_memory.game.model.Player
+import net.wackwack.pic_card_memory.settings.model.BGMVolume
 import net.wackwack.pic_card_memory.settings.usecase.SettingsRepository
 import javax.inject.Inject
 
@@ -72,5 +74,30 @@ class GameUseCase @Inject constructor(
 
     fun getWinner(): Player? {
         return gameRepository.getCurrentGameBoard().findWinner()
+    }
+
+    /*
+    BGMをONにして情報を保存する
+     */
+    suspend fun setBGMOn() {
+        if(!settingsRepository.updateBGMVolume(BGMVolume.MAX)) {
+            Log.e(javaClass.simpleName,"Failed to save BGMVolume ON")
+        }
+    }
+
+    /*
+    BGMをOFFにして情報を保存する
+     */
+    suspend fun setBGMOff() {
+        if (!settingsRepository.updateBGMVolume(BGMVolume.MIN)) {
+            Log.e(javaClass.simpleName, "Failed to save BGMVolume OFF")
+        }
+    }
+
+    /*
+    保存されているBGMの設定を取得する
+     */
+    suspend fun getSavedBGM(): BGMVolume {
+        return settingsRepository.getBGMVolume()
     }
 }

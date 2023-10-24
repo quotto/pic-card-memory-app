@@ -3,19 +3,19 @@ package net.wackwack.pic_card_memory
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import kotlinx.coroutines.Dispatchers
 import net.wackwack.pic_card_memory.settings.model.ImagePathType
 import net.wackwack.pic_card_memory.settings.model.NumOfCard
 import net.wackwack.pic_card_memory.settings.repository.SettingsRepositoryImpl
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 
 @SmallTest
 class SettingsRepositoryImplTest {
-    private val settingsRepositoryImpl = SettingsRepositoryImpl(ApplicationProvider.getApplicationContext())
+    private val settingsRepositoryImpl = SettingsRepositoryImpl(ApplicationProvider.getApplicationContext(),
+        Dispatchers.IO)
     private val sharedPreference = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
 
     @Before

@@ -99,11 +99,11 @@ jobs:
       - name: UI test on Firebase TestLab
         run: |
           gcloud firebase test android run --type instrumentation --app app-debug.apk --test app-debug-androidTest.apk \
+          --device model=husky,version=34,locale=en,orientation=portrait \
           --device model=panther,version=33,locale=en,orientation=portrait \
           --device model=oriole,version=31,locale=en,orientation=portrait \
           --device model=redfin,version=30,locale=en,orientation=portrait \
           --device model=a10,version=29,locale=en,orientation=portrait \
-          --device model=Nexus5,version=21,locale=en,orientation=portrait
 
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/release'
