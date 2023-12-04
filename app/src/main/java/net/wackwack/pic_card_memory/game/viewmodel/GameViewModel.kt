@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Job
 import net.wackwack.pic_card_memory.game.repository.InsufficientImagesException
 import net.wackwack.pic_card_memory.game.usecase.GameUseCase
 import kotlinx.coroutines.delay
@@ -20,6 +21,7 @@ import net.wackwack.pic_card_memory.game.model.PlayerType
 import net.wackwack.pic_card_memory.game.usecase.ImageRepository
 import net.wackwack.pic_card_memory.game.usecase.GameResult
 import net.wackwack.pic_card_memory.game.view.GameMode
+import net.wackwack.pic_card_memory.settings.model.BGMVolume
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -29,7 +31,8 @@ import kotlin.math.ceil
 class GameViewModel @Inject  constructor(
     private val useCase: GameUseCase,
     private val imageRepository: ImageRepository,
-    @ApplicationContext context: Context): ViewModel() {
+    @ApplicationContext context: Context,
+    ): ViewModel() {
 
     private val selected = arrayOfNulls<Int>(2)
     private val _imageCards: ArrayList<ImageCard> = arrayListOf()
@@ -52,9 +55,22 @@ class GameViewModel @Inject  constructor(
     private val _currentPlayerIndex = MutableStateFlow(0)
     val currentPlayerIndex: StateFlow<Int> = _currentPlayerIndex
 
+    private val _audioControl = MutableSharedFlow<AudioControl>(replay = 0)
+    val audioControl: SharedFlow<AudioControl> = _audioControl
+
+    private lateinit var _audioEnabled: MutableStateFlow<Boolean>
+    val audioEnabled: StateFlow<Boolean> by lazy {
+        _audioEnabled
+    }
     private val mResources: Resources by lazy { context.resources }
 
-    fun startGame(dispatcher: CoroutineContext, gameMode: GameMode, theme: Resources.Theme) {
+    fun init(): Job {
+        return viewModelScope.launch {
+            _audioEnabled = MutableStateFlow(useCase.getSavedBGM() == BGMVolume.MAX)
+        }
+    }
+
+    fun prepareGame(dispatcher: CoroutineContext, gameMode: GameMode, theme: Resources.Theme) {
         // 初期化
         _imageCards.clear()
         selected[0] = null
@@ -90,8 +106,8 @@ class GameViewModel @Inject  constructor(
                             }
                         )
                     }
-                    Log.d(javaClass.simpleName, "Emitted: Start Game")
-                    _message.emit(GameMessage.Start)
+                    Log.d(javaClass.simpleName, "Emitted: CountDown")
+                    _message.emit(GameMessage.CountDown)
                 }
             } catch(e: InsufficientImagesException) {
                 viewModelScope.launch {
@@ -102,18 +118,21 @@ class GameViewModel @Inject  constructor(
         }
     }
 
-    private fun toHexString(color: Int): String {
-        return String.format("#%06X", 0XFFFFFF and color)
-    }
-
-    fun startTimer() {
+    fun startGame() {
         viewModelScope.launch {
+            _message.emit(GameMessage.Start)
+            if(_audioEnabled.value) {_audioControl.emit(AudioControl.Start)}
+
             _elapsedTime.value = 0
             while (!useCase.checkGameEnd()) {
                 delay(1000)
                 _elapsedTime.value++
             }
         }
+    }
+
+    private fun toHexString(color: Int): String {
+        return String.format("#%06X", 0XFFFFFF and color)
     }
 
     fun doneCloseCard(cardIndex: Int) {
@@ -181,9 +200,10 @@ class GameViewModel @Inject  constructor(
                                 _cardOperationMutex.unlock()
 
                                 if (openResult.gameResult == GameResult.GAME_END) {
-                                    // クリアを通知
+                                    // ゲームクリアを通知
                                     val winner = useCase.getWinner()
                                     _message.emit(GameMessage.GameEnd(winner))
+                                    _audioControl.emit(AudioControl.Stop)
                                 } else {
                                     // 次のプレーヤーを通知する、ペアが揃っているため継続になる
                                     _message.emit(GameMessage.NextPlayer(_players.value[_currentPlayerIndex.value]))
@@ -241,6 +261,19 @@ class GameViewModel @Inject  constructor(
         }
     }
 
+    fun toggleAudioEnabled() {
+        _audioEnabled.value = !_audioEnabled.value
+        viewModelScope.launch {
+            if(_audioEnabled.value) {
+                _audioControl.emit(AudioControl.Start)
+                useCase.setBGMOn()
+            } else {
+                _audioControl.emit(AudioControl.Pause)
+                useCase.setBGMOff()
+            }
+        }
+    }
+
     fun elapsedTimeToString(): String {
         var elapsedTimeText = ""
         val min = ceil((elapsedTime.value/60).toDouble()).toInt()
@@ -258,6 +291,26 @@ class GameViewModel @Inject  constructor(
         }
         return elapsedTimeText
     }
+
+    fun resume() {
+        viewModelScope.launch {
+            _audioEnabled.let {
+                if(_audioEnabled.value) {
+                    _audioControl.emit(AudioControl.Start)
+                }
+            }
+        }
+    }
+
+    fun pause() {
+        viewModelScope.launch {
+            _audioEnabled.let {
+                if(_audioEnabled.value) {
+                    _audioControl.emit(AudioControl.Pause)
+                }
+            }
+        }
+    }
 }
 
 sealed class GameMessage {
@@ -267,7 +320,14 @@ sealed class GameMessage {
     data class NextPlayer(val nextPlayer: Player): GameMessage()
     data class GameEnd(val winner: Player?): GameMessage()
     object Start : GameMessage()
+    object CountDown : GameMessage()
     data class Error(val exception: Exception): GameMessage()
+}
+
+enum class AudioControl {
+    Start,
+    Pause,
+    Stop,
 }
 
 enum class CardStatus {

@@ -25,7 +25,6 @@ enum class NumOfCard(val numValue: Int){
         }
     }
 }
-
 enum class ImagePathType(val numValue: Int) {
     EXTERNAL(0),
     SPECIFIED(1);
@@ -36,6 +35,26 @@ enum class ImagePathType(val numValue: Int) {
             values().forEach { imagePathType ->
                 if (imagePathType.numValue == v) {
                     result = imagePathType
+                    return@forEach
+                }
+            }
+            if (result == null) {
+                throw IllegalArgumentException()
+            }
+            return result!!
+        }
+    }
+}
+
+enum class BGMVolume(val volume: Float) {
+    MIN(0.0f),
+    MAX(1.0f);
+    companion object {
+        fun convertToValue(v: Float): BGMVolume {
+            var result: BGMVolume? = null
+            values().forEach { bgmVolume ->
+                if (bgmVolume.volume == v) {
+                    result = bgmVolume
                     return@forEach
                 }
             }

@@ -35,5 +35,7 @@
     <string name="text_of_player1Name">P1</string>
     <string name="text_of_player2Name">P2</string>>
     <string name="text_of_youName">あなた</string>
-    <string name="text_of_comName">COM</string>>
+    <string name="text_of_comName">COM</string>
+    <string name="text_mute_button_description">mute button</string>
+    <string name="text_volume_button_description">volume button</string>>
 </resources>

@@ -1,6 +1,7 @@
 package net.wackwack.pic_card_memory.settings.usecase
 
 import android.util.Log
+import net.wackwack.pic_card_memory.settings.model.BGMVolume
 import net.wackwack.pic_card_memory.settings.model.ImagePathType
 import net.wackwack.pic_card_memory.settings.model.NumOfCard
 import javax.inject.Inject
@@ -27,6 +28,20 @@ class SettingsUseCase @Inject constructor (private val settingsRepository: Setti
             result = true
         }
         return result
+    }
+
+    suspend fun getBGMVolume(): BGMVolume {
+        return settingsRepository.getBGMVolume()
+    }
+
+    suspend fun setVolumeToMax(): Boolean {
+        // Configに書き込み
+        return settingsRepository.updateBGMVolume(BGMVolume.MAX)
+    }
+
+    suspend fun setVolumeToMin(): Boolean {
+        // Configに書き込み
+        return settingsRepository.updateBGMVolume(BGMVolume.MIN)
     }
 }
 

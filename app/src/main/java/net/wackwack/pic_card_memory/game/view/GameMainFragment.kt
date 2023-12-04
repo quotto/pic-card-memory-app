@@ -4,6 +4,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -35,6 +36,7 @@ import net.wackwack.pic_card_memory.game.model.Player
 import net.wackwack.pic_card_memory.game.model.PlayerType
 import net.wackwack.pic_card_memory.game.model.computer.ComputerFactory
 import net.wackwack.pic_card_memory.game.model.computer.ComputerInterface
+import net.wackwack.pic_card_memory.game.viewmodel.AudioControl
 import net.wackwack.pic_card_memory.game.viewmodel.CardStatus
 
 
@@ -75,7 +77,7 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
 
     private lateinit var gameMode: GameMode
 
-    private lateinit var computer: ComputerInterface
+    private var computer: ComputerInterface? = null
 
     /*
     game_loading_view,game_end_view,game_countdown_viewなど動的に全面にかぶせるView用のレイアウトパラメータ
@@ -88,11 +90,18 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
         bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
     }
 
+
+    private var mediaPlayer: MediaPlayer? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        mediaPlayer = MediaPlayer.create(context, R.raw.game)
+        // mediaPlayerのリプレイを有効にする
+        mediaPlayer?.isLooping = true
+
         gameMode = GameMode.valueOf(arguments?.getString(PARAM_GAME_MODE)?: GameMode.SINGLE.toString())
+
         return when(gameMode){
             GameMode.MULTIPLE, GameMode.COM -> inflater.inflate(R.layout.game_base_vs_view, container, false)
             GameMode.SINGLE -> inflater.inflate(R.layout.game_base_view, container, false)
@@ -102,12 +111,53 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(javaClass.simpleName, "onViewCreated")
+
+        // 音量ボタンタップ時の処理
+        view.findViewById<ImageButton>(R.id.musicOnToOffButton)?.setOnClickListener {
+            viewModel.toggleAudioEnabled()
+        }
+        view.findViewById<ImageButton>(R.id.musicOffToOnButton)?.setOnClickListener {
+            viewModel.toggleAudioEnabled()
+        }
+
         if(viewModel.imageCards.isEmpty()) {
             // カードの裏面のビットマップを取得する
             val cardBackImageBitmap = BitmapFactory.decodeResource(
                 resources,
                 R.drawable.card_back
             )
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.audioControl.collect { audioControl ->
+                        when (audioControl) {
+                            AudioControl.Start -> {
+                                mediaPlayer?.start()
+                            }
+                            AudioControl.Pause -> {
+                                mediaPlayer?.pause()
+                            }
+                            AudioControl.Stop -> {
+                                mediaPlayer?.stop()
+                                mediaPlayer?.prepare()
+                            }
+                        }
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.init().join()
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.audioEnabled.collect { audioEnabled ->
+                        // volumeButtonとmuteButtonの表示を切り替える
+                        view.findViewById<ImageButton>(R.id.musicOnToOffButton).visibility =
+                            if (audioEnabled) View.VISIBLE else View.INVISIBLE
+                        view.findViewById<ImageButton>(R.id.musicOffToOnButton).visibility =
+                            if (audioEnabled) View.INVISIBLE else View.VISIBLE
+                    }
+                }
+            }
 
             viewLifecycleOwner.lifecycleScope.launch{
                 repeatOnLifecycle(Lifecycle.State.STARTED)  {
@@ -145,10 +195,14 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
                                 }
                             }
 
-                            is GameMessage.Start -> {
-                                Log.d(javaClass.simpleName, "Start Game")
+                            is GameMessage.CountDown -> {
+                                Log.d(javaClass.simpleName, "CountDown")
                                 setAllCardViewImage()
                                 showCountDown()
+                            }
+
+                            is GameMessage.Start -> {
+                                Log.d(javaClass.simpleName, "Start Game")
 
                                 // カードの配置が終わったらアイドリング状態にする
                                 countingIdlingResourceForLoading.decrement()
@@ -216,7 +270,7 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
                         }
                         if (gameMode == GameMode.COM) {
                             // コンピューター対戦の場合はコンピューターのターンを開始する
-                            computer.action(gameMessage)
+                            computer?.action(gameMessage)
                         }
                     }
                 }
@@ -227,6 +281,25 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
             // viewModelのカードサイズがある場合はカード表示を復元する
             setAllCardViewImage()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(viewModel.imageCards.isNotEmpty()) {
+            viewModel.resume()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if(viewModel.imageCards.isNotEmpty()) {
+            viewModel.pause()
+        }
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 
     /*
@@ -240,7 +313,7 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
 
         // テスト用のIdlingResourceをビジー状態にする
         countingIdlingResourceForLoading.increment()
-        viewModel.startGame(Dispatchers.Default, gameMode, activity?.theme?: resources.newTheme())
+        viewModel.prepareGame(Dispatchers.Default, gameMode, activity?.theme?: resources.newTheme())
     }
 
     private fun setAllCardViewImage() {
@@ -307,7 +380,7 @@ class GameMainFragment : Fragment(), GameEndViewReceiver {
                 countdownViewBinding.root
             )
             countingIdlingResourceForCountDown.decrement()
-            viewModel.startTimer()
+            viewModel.startGame()
             return
         }
         Log.d(javaClass.simpleName, "countDown: ${count-pastCount}")
