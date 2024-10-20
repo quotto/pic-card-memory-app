@@ -36,4 +36,6 @@
     <string name="text_of_player2Name">P2</string>>
     <string name="text_of_youName">あなた</string>
     <string name="text_of_comName">COM</string>>
+    <string name="text_privacy_policy_link"><a href="https://pic-card-meory-app-bucket.s3.ap-northeast-1.amazonaws.com/public/policy.html">プライバシーポリシー</a></string>
+    <string name="text_of_licenses"><a href="">ライセンスの表示</a></string>
 </resources>
