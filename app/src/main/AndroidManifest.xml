@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -31,7 +32,13 @@
         <activity
             android:name="net.wackwack.pic_card_memory.game.view.GameActivity"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            />
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"/>
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"/>
     </application>
 
 </manifest>

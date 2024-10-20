@@ -1,14 +1,10 @@
 package net.wackwack.pic_card_memory
 
-import android.Manifest
 import android.content.ContentValues
 import android.content.Context
 import android.provider.MediaStore
 import android.util.Log
 import androidx.test.core.app.ApplicationProvider
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StreamDownloadTask
 import com.google.firebase.storage.ktx.storage
@@ -34,14 +30,14 @@ class UseSampleImageTestRule: TestRule {
                         }
                         val uri = resolver.insert(MediaStore.Files.getContentUri("external"), newValues)
                         val outputStream = resolver.openOutputStream(uri!!)
-                        val task = item.getStream { state, stream ->
-                            var buffer = ByteArray(1024)
+                        val task = item.getStream { _, stream ->
+                            val buffer = ByteArray(1024)
                             while (stream.read(buffer) != -1) {
                                 outputStream?.write(buffer)
                             }
                         }
                         task.addOnCompleteListener {
-                            Log.d(javaClass.simpleName, "save: ${uri}")
+                            Log.d(javaClass.simpleName, "save: $uri")
                             outputStream?.close()
                         }.addOnFailureListener {
                             Log.e(javaClass.simpleName, it.message!!)

@@ -4,10 +4,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import net.wackwack.pic_card_memory.menu.view.MainActivity
@@ -15,7 +14,6 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 /**
  * 一部のUIがOSやデバイスに依存するケースのテスト
@@ -25,7 +23,7 @@ import org.junit.runner.RunWith
 @Ignore("フォルダーの指定がOSやデバイスに依存するため、テストを無効化")
 class SettingsActivityDependsDeviceTest {
     @get:Rule
-    val activityRule = ActivityTestRule(MainActivity::class.java)
+    val activityRule = ActivityScenarioRule(MainActivity::class.java)
     private lateinit var device: UiDevice
     @Before
     fun setUp() {

@@ -102,7 +102,7 @@ class GameBoardTest {
         @Test
         @DisplayName("プレーヤーが3人の時は順番に交代すること")
         fun changeThreePlayers() {
-            instance = GameBoard(listOf<Card>(),listOf(
+            instance = GameBoard(listOf(),listOf(
                 Player("p1","#FFFFFF", PlayerType.USER),
                 Player("p2","#FFFFFF", PlayerType.USER),
                 Player("p3","#FFFFFF", PlayerType.USER)
@@ -117,7 +117,7 @@ class GameBoardTest {
         @Test
         @DisplayName("プレーヤーが1人の時はcurrentPlayerが変わらないこと")
         fun changeOnePlayer() {
-            instance = GameBoard(listOf<Card>(),listOf(
+            instance = GameBoard(listOf(),listOf(
                 Player("p1","#FFFFFF", PlayerType.USER)
             ))
             instance.changePlayer()
