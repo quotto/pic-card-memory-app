@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeFragmentContainer"
+        app:layout_constraintTop_toBottomOf="@+id/musicOnToOffButton"
         tools:layout="@layout/fragment_player_status" />
 
     <androidx.fragment.app.FragmentContainerView
@@ -26,6 +26,29 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/fragment_elapsed_time" />
 
+    <ImageButton
+        android:id="@+id/musicOnToOffButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:background="@null"
+        android:contentDescription="@string/text_volume_button_description"
+        android:src="@drawable/baseline_music_note_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageButton
+        android:id="@+id/musicOffToOnButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:background="@null"
+        android:contentDescription="@string/text_mute_button_description"
+        android:src="@drawable/baseline_music_off_24"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <FrameLayout
         android:id="@+id/gameMainContainer"
         android:layout_width="match_parent"

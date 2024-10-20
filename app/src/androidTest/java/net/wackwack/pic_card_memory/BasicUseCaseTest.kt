@@ -13,7 +13,6 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -29,7 +28,6 @@ import net.wackwack.pic_card_memory.game.view.GameActivity
 import net.wackwack.pic_card_memory.game.view.GameMainFragment
 import net.wackwack.pic_card_memory.menu.view.MainActivity
 import org.junit.*
-import org.junit.runner.RunWith
 
 
 @LargeTest
@@ -43,7 +41,6 @@ class BasicUseCaseTest {
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
             GrantPermissionRule.grant(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
             )
         } else {
             GrantPermissionRule.grant(
@@ -136,6 +133,16 @@ class BasicUseCaseTest {
             Assert.assertNotEquals("00:00",elapsedTimeText)
         }
 
+        // オーディオボタンが表示されていること
+        onView(withId(R.id.musicOnToOffButton)).check(matches(isDisplayed()))
+
+        // オーディオボタンをタップするとBGMが停止してボタンが切り替わること
+        onView(withId(R.id.musicOnToOffButton)).perform(click())
+        onView(withId(R.id.musicOffToOnButton)).check(matches(isDisplayed()))
+
+        // 再度オーディオボタンをタップするとBGMが再生されてボタンが切り替わること
+        onView(withId(R.id.musicOffToOnButton)).perform(click())
+        onView(withId(R.id.musicOnToOffButton)).check(matches(isDisplayed()))
     }
 
     /**
@@ -181,6 +188,17 @@ class BasicUseCaseTest {
 
             Assert.assertNotEquals("00:00",elapsedTimeText)
         }
+
+        // オーディオボタンが表示されていること
+        onView(withId(R.id.musicOnToOffButton)).check(matches(isDisplayed()))
+
+        // オーディオボタンをタップするとBGMが停止してボタンが切り替わること
+        onView(withId(R.id.musicOnToOffButton)).perform(click())
+        onView(withId(R.id.musicOffToOnButton)).check(matches(isDisplayed()))
+
+        // 再度オーディオボタンをタップするとBGMが再生されてボタンが切り替わること
+        onView(withId(R.id.musicOffToOnButton)).perform(click())
+        onView(withId(R.id.musicOnToOffButton)).check(matches(isDisplayed()))
     }
 
     /**
@@ -231,6 +249,10 @@ class BasicUseCaseTest {
 
             Assert.assertNotEquals("00:00",elapsedTimeText)
         }
+
+        // 再度オーディオボタンをタップするとBGMが再生されてボタンが切り替わること
+        onView(withId(R.id.musicOnToOffButton)).perform(click())
+        onView(withId(R.id.musicOffToOnButton)).check(matches(isDisplayed()))
     }
 
     /**
@@ -251,6 +273,41 @@ class BasicUseCaseTest {
 
         // メインメニューが表示されていること
         onView(withId(R.id.fragmentMainMenuOption)).check(matches(isDisplayed()))
+    }
+
+    /**
+     * BGMの設定が反映されることを確認するシナリオ
+     */
+    @Test
+    fun turnOnToOffBGM() {
+        // 遊ぶをタップ
+        onView(withId(R.id.startPlayButton)).perform(click())
+
+        // COMと遊ぶをクリック
+        onView(withId(R.id.computerPlayButton)).perform(click())
+
+        // 強いを選択
+        onView(withId(R.id.hardLevelButton)).perform(click())
+
+        // 12枚×外部ストレージ全体の組み合わせでゲームが始まること
+        registerIdling()
+        onView(withId(R.id.cards12Container)).check(matches(isDisplayed()))
+
+        // カウントダウンのViewが消えたこと
+        onView(withId(R.id.countdownView)).check(doesNotExist())
+
+        // オーディオボタンをタップするとBGMが停止してボタンが切り替わること
+        onView(withId(R.id.musicOnToOffButton)).perform(click())
+        onView(withId(R.id.musicOffToOnButton)).check(matches(isDisplayed()))
+
+        // バックキーでメインメニューに戻る
+        pressBack()
+
+        // 再度強いをタップ
+        onView(withId(R.id.hardLevelButton)).perform(click())
+
+        // オーディオボタンがBGM停止状態であること
+        onView(withId(R.id.musicOffToOnButton)).check(matches(isDisplayed()))
     }
 
 
