@@ -251,8 +251,8 @@ class BasicUseCaseTest {
         }
 
         // 再度オーディオボタンをタップするとBGMが再生されてボタンが切り替わること
-        onView(withId(R.id.musicOffToOnButton)).perform(click())
-        onView(withId(R.id.musicOnToOffButton)).check(matches(isDisplayed()))
+        onView(withId(R.id.musicOnToOffButton)).perform(click())
+        onView(withId(R.id.musicOffToOnButton)).check(matches(isDisplayed()))
     }
 
     /**
