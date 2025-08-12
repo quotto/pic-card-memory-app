@@ -1,19 +1,19 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id("de.mannodermaus.android-junit5") version "1.9.3.0"
+    id("de.mannodermaus.android-junit5") version "1.10.2.0"
     id 'jacoco'
 }
 apply plugin: 'kotlin-kapt'
 apply plugin: 'dagger.hilt.android.plugin'
-apply plugin: 'com.google.gms.google-services'
+// 一時的にGoogle Servicesを無効化（google-services.jsonファイルが必要）
+// apply plugin: 'com.google.gms.google-services'
 
 // アプリのバージョンをversion.propertiesから取得
 def versionProps = new Properties()
 versionProps.load(project.rootProject.file('version.properties').newDataInputStream())
 def majorVersion = versionProps.getProperty('version.major')
 def minorVersion = versionProps.getProperty('version.minor')
-// パッチバージョンはパラメータが与えられている場合はそちらを優先し、無い場合はversion.propertiesから取得する
 def patchVersion = project.hasProperty('patchVersion') ? project.getProperty('patchVersion') : versionProps.getProperty('version.patch')
 
 android {
@@ -28,19 +28,19 @@ android {
         }
     }
 
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
         applicationId "net.wackwack.pic_card_memory"
-        minSdk 23
-        targetSdk 33
+        minSdk 24
+        targetSdk 35
         versionCode 7
         versionName "${majorVersion}.${minorVersion}.${patchVersion}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "app-${defaultConfig.versionName}"
     }
 
-    lintOptions {
+    lint {
         baseline file("lint-baseline.xml")
     }
 
@@ -51,21 +51,22 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = '17'
     }
+
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
-    dataBinding {
-        enabled = true
-    }
-    namespace 'net.wackwack.pic_card_memory'
 
+    namespace 'net.wackwack.pic_card_memory'
 
     testOptions {
         unitTests.all {
@@ -75,32 +76,34 @@ android {
     }
 }
 
-
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.fragment:fragment-ktx:1.5.7'
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+    implementation 'androidx.preference:preference:1.2.1'
     implementation "com.google.dagger:hilt-android:$hlt_version"
     implementation 'androidx.test.espresso:espresso-idling-resource:3.5.1'
-    implementation 'com.google.firebase:firebase-auth-ktx:22.0.0'
+
+    // Firebase関連は一時的にコメントアウト（google-services.jsonが必要）
+    // implementation 'com.google.firebase:firebase-auth-ktx'
+    // implementation platform('com.google.firebase:firebase-bom:33.6.0')
+    // implementation 'com.google.firebase:firebase-storage-ktx'
+
     kapt "com.google.dagger:hilt-android-compiler:$hlt_version"
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
-    testImplementation "com.nhaarman:mockito-kotlin:1.6.0"
-    testImplementation 'org.mockito:mockito-core:5.2.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.2.1"
+    testImplementation 'org.mockito:mockito-core:5.11.0'
     testImplementation 'org.mockito:mockito-inline:5.2.0'
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test:rules:1.5.0'
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    implementation platform('com.google.firebase:firebase-bom:30.0.2')
-    implementation 'com.google.firebase:firebase-storage-ktx:20.2.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0'
 }
