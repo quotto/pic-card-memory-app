@@ -28,12 +28,12 @@ android {
         }
     }
 
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "net.wackwack.pic_card_memory"
         minSdk 24
-        targetSdk 35
+        targetSdk 36
         versionCode 7
         versionName "${majorVersion}.${minorVersion}.${patchVersion}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -77,17 +77,17 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    implementation 'androidx.fragment:fragment-ktx:1.8.5'
     implementation 'androidx.preference:preference:1.2.1'
     implementation "com.google.dagger:hilt-android:$hlt_version"
-    implementation 'androidx.test.espresso:espresso-idling-resource:3.5.1'
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.6.1'
 
     // Firebase関連は一時的にコメントアウト（google-services.jsonが必要）
     // implementation 'com.google.firebase:firebase-auth-ktx'
@@ -96,14 +96,14 @@ dependencies {
 
     kapt "com.google.dagger:hilt-android-compiler:$hlt_version"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-    testImplementation "org.mockito.kotlin:mockito-kotlin:5.2.1"
-    testImplementation 'org.mockito:mockito-core:5.11.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.3'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.4.0"
+    testImplementation 'org.mockito:mockito-core:5.14.2'
     testImplementation 'org.mockito:mockito-inline:5.2.0'
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation 'androidx.test:runner:1.5.2'
-    androidTestImplementation 'androidx.test:rules:1.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0'
 }
