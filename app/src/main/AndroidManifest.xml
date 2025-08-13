@@ -6,6 +6,7 @@
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CardShuffle.NoActionBar"
         android:name=".PicCardMemoryApplication"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        android:localeConfig="@xml/locales_config">
 
         <activity
             android:name="net.wackwack.pic_card_memory.game.view.DetailImageActivity"
