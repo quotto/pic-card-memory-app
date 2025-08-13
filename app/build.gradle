@@ -89,10 +89,9 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hlt_version"
     implementation 'androidx.test.espresso:espresso-idling-resource:3.6.1'
 
-    // Firebase関連は一時的にコメントアウト（google-services.jsonが必要）
-    // implementation 'com.google.firebase:firebase-auth-ktx'
-    // implementation platform('com.google.firebase:firebase-bom:33.6.0')
-    // implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation platform('com.google.firebase:firebase-bom:33.6.0')
+    implementation 'com.google.firebase:firebase-storage-ktx'
 
     kapt "com.google.dagger:hilt-android-compiler:$hlt_version"
 

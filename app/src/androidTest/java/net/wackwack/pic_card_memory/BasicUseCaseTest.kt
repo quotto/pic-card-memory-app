@@ -13,10 +13,9 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
@@ -29,13 +28,12 @@ import net.wackwack.pic_card_memory.game.view.GameActivity
 import net.wackwack.pic_card_memory.game.view.GameMainFragment
 import net.wackwack.pic_card_memory.menu.view.MainActivity
 import org.junit.*
-import org.junit.runner.RunWith
 
 
 @LargeTest
 class BasicUseCaseTest {
     @get:Rule
-    val activityRule = ActivityTestRule(MainActivity::class.java)
+    val activityRule = ActivityScenarioRule(MainActivity::class.java)
     @get:Rule
     val mGrantPermissionRule: GrantPermissionRule =
        // テストを実行する端末のAPIが33以上であればREAD_MEDIA_IMAGESを許可する
@@ -43,7 +41,6 @@ class BasicUseCaseTest {
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
             GrantPermissionRule.grant(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
             )
         } else {
             GrantPermissionRule.grant(

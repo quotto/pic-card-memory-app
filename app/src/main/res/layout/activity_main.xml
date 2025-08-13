@@ -29,30 +29,38 @@
 
     </FrameLayout>
 
-<!--    <Button-->
-<!--        android:id="@+id/startPlayButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:backgroundTint="@color/activated"-->
-<!--        android:fontFamily="@font/jkg"-->
-<!--        android:text="@string/text_of_startPlayButton"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="18sp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        tools:ignore="TextContrastCheck" />-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-<!--    <Button-->
-<!--        android:id="@+id/gotoSettingsButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="5dp"-->
-<!--        android:fontFamily="@font/jkg"-->
-<!--        android:text="@string/text_of_gotoSettingsButton"-->
-<!--        android:textSize="18sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/startPlayButton" />-->
+        <TextView
+            android:id="@+id/licensesLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:text="@string/text_of_licenses"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textColorHighlight="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:textColorLink="@android:color/white" />
+
+        <TextView
+            android:id="@+id/privacyPolicyLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:paddingBottom="5dp"
+            android:text="@string/text_privacy_policy_link"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textColorHighlight="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:textColorLink="@android:color/white" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
