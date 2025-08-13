@@ -8,8 +8,11 @@ import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import net.wackwack.pic_card_memory.databinding.ActivitySettingsBinding
 import net.wackwack.pic_card_memory.settings.model.NumOfCard
 import net.wackwack.pic_card_memory.settings.viewmodel.CommandSettings
@@ -64,34 +67,36 @@ class SettingsActivity : AppCompatActivity() {
             launcher.launch(intent)
         }
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.message.collect { command->
-                Log.d(javaClass.simpleName, "Receive Message")
-                when(command) {
-                    is CommandSettings.UpdateNumOfCard -> {
-                        dataBinding.toggleNumOfCard12.isChecked = command.numOfCard == NumOfCard.TWELVE
-                        dataBinding.toggleNumOfCard12.isClickable = command.numOfCard != NumOfCard.TWELVE
-                        dataBinding.toggleNumOfCard20.isChecked = command.numOfCard == NumOfCard.TWENTY
-                        dataBinding.toggleNumOfCard20.isClickable = command.numOfCard != NumOfCard.TWENTY
-                        dataBinding.toggleNumOfCard30.isChecked = command.numOfCard == NumOfCard.THIRTY
-                        dataBinding.toggleNumOfCard30.isClickable = command.numOfCard != NumOfCard.THIRTY
-                    }
-                    is CommandSettings.UpdateImagePathType -> {
-                        when(command.pathType) {
-                            ImagePathType.EXTERNAL -> {
-                                dataBinding.radioSDCard.isChecked = true
-                                dataBinding.textSpecifiedDirectoryPath.text = ""
-                                dataBinding.textSpecifiedDirectoryPath.visibility = View.INVISIBLE
-                            }
-                            ImagePathType.SPECIFIED -> {
-                                dataBinding.radioSpecifyDirectory.isChecked = true
-                                dataBinding.textSpecifiedDirectoryPath.text = command.path
-                                dataBinding.textSpecifiedDirectoryPath.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.message.collect { command->
+                    Log.d(javaClass.simpleName, "Receive Message")
+                    when(command) {
+                        is CommandSettings.UpdateNumOfCard -> {
+                            dataBinding.toggleNumOfCard12.isChecked = command.numOfCard == NumOfCard.TWELVE
+                            dataBinding.toggleNumOfCard12.isClickable = command.numOfCard != NumOfCard.TWELVE
+                            dataBinding.toggleNumOfCard20.isChecked = command.numOfCard == NumOfCard.TWENTY
+                            dataBinding.toggleNumOfCard20.isClickable = command.numOfCard != NumOfCard.TWENTY
+                            dataBinding.toggleNumOfCard30.isChecked = command.numOfCard == NumOfCard.THIRTY
+                            dataBinding.toggleNumOfCard30.isClickable = command.numOfCard != NumOfCard.THIRTY
+                        }
+                        is CommandSettings.UpdateImagePathType -> {
+                            when(command.pathType) {
+                                ImagePathType.EXTERNAL -> {
+                                    dataBinding.radioSDCard.isChecked = true
+                                    dataBinding.textSpecifiedDirectoryPath.text = ""
+                                    dataBinding.textSpecifiedDirectoryPath.visibility = View.INVISIBLE
+                                }
+                                ImagePathType.SPECIFIED -> {
+                                    dataBinding.radioSpecifyDirectory.isChecked = true
+                                    dataBinding.textSpecifiedDirectoryPath.text = command.path
+                                    dataBinding.textSpecifiedDirectoryPath.visibility = View.VISIBLE
+                                }
                             }
                         }
-                    }
-                    else -> {
-                        Log.w(javaClass.simpleName, "Unexpected message: $command")
+                        else -> {
+                            Log.w(javaClass.simpleName, "Unexpected message: $command")
+                        }
                     }
                 }
             }

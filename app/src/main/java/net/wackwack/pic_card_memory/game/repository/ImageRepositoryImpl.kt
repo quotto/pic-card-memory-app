@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -36,9 +37,15 @@ class ImageRepositoryImpl @Inject constructor(@ApplicationContext val context: C
 
     override fun loadImageByCard(card: Card): Bitmap {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            context.contentResolver.loadThumbnail(Uri.parse(card.uriString), Size(640, 480),null)
+            context.contentResolver.loadThumbnail(Uri.parse(card.uriString), Size(640, 480), null)
         } else {
-            MediaStore.Images.Media.getBitmap(context.contentResolver,Uri.parse(card.uriString))
+            // getBitmap()の代わりにImageDecoderを使用（API 28以降）またはBitmapFactoryを使用
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, Uri.parse(card.uriString)))
+            } else {
+                @Suppress("DEPRECATION")
+                MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(card.uriString))
+            }
         }
     }
 

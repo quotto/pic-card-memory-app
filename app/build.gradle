@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id("de.mannodermaus.android-junit5") version "1.9.3.0"
+    id("de.mannodermaus.android-junit5") version "1.10.2.0"
     id 'com.google.android.gms.oss-licenses-plugin'
     id 'jacoco'
 }
@@ -29,19 +29,19 @@ android {
         }
     }
 
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "net.wackwack.pic_card_memory"
-        minSdk 23
-        targetSdk 34
-        versionCode 8
+        minSdk 24
+        targetSdk 35
+        versionCode 7
         versionName "${majorVersion}.${minorVersion}.${patchVersion}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "app-${defaultConfig.versionName}"
     }
 
-    lintOptions {
+    lint {
         baseline file("lint-baseline.xml")
     }
 
@@ -52,21 +52,22 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = '17'
     }
+
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
-    dataBinding {
-        enabled = true
-    }
-    namespace 'net.wackwack.pic_card_memory'
 
+    namespace 'net.wackwack.pic_card_memory'
 
     testOptions {
         unitTests.all {
@@ -76,13 +77,13 @@ android {
     }
 }
 
-
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.6'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'
@@ -94,10 +95,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx:23.0.0'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.1.0'
     kapt "com.google.dagger:hilt-android-compiler:$hlt_version"
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.2.1"
+    testImplementation 'org.mockito:mockito-core:5.11.0'
     testImplementation "com.nhaarman:mockito-kotlin:1.6.0"
     testImplementation 'org.mockito:mockito-core:5.5.0'
     testImplementation 'org.mockito:mockito-inline:5.2.0'
+
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation 'androidx.test:runner:1.6.2'
