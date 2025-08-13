@@ -3,15 +3,16 @@ buildscript {
     ext.hlt_version= '2.46.1'
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hlt_version"
-        classpath 'com.google.gms:google-services:4.4.0'
+        classpath 'com.google.gms:google-services:4.4.2'
+        classpath "com.google.android.gms:oss-licenses-plugin:0.10.6"
     }
 }
 plugins {
-    id 'com.android.application' version '8.1.1' apply false
-    id 'com.android.library' version '8.1.1' apply false
+    id 'com.android.application' version '8.6.1' apply false
+    id 'com.android.library' version '8.6.1' apply false
     id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
 }
 
 tasks.register('clean', Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDir
 }
