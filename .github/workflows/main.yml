@@ -102,7 +102,7 @@ jobs:
           --device model=oriole,version=31,locale=en,orientation=portrait \
           --device model=redfin,version=30,locale=en,orientation=portrait \
           --device model=a10,version=29,locale=en,orientation=portrait \
-          --device model=pixel9pro,version=35,locale=en,orientation=portrait
+          --device model=MediumPhone.arm,version=36,locale=en,orientation=portrait
 
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/release'
