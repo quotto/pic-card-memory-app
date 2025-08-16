@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -28,7 +30,7 @@ class SettingsActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()) { result->
                 Log.d(javaClass.simpleName, result.data?.data.toString())
-                if(result.resultCode == Activity.RESULT_OK) {
+                if(result.resultCode == RESULT_OK) {
                     //Configに登録
                     result.data?.data?.also { uri ->
                         contentResolver.takePersistableUriPermission(
@@ -48,6 +50,14 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         dataBinding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(dataBinding.root)
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            ViewCompat.setOnApplyWindowInsetsListener(dataBinding.root) { v, insets ->
+                val systemBarsInsets: androidx.core.graphics.Insets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, systemBarsInsets.bottom)
+                WindowInsetsCompat.CONSUMED
+            }
+        }
 
 
         dataBinding.toggleNumOfCard12.setOnClickListener {
