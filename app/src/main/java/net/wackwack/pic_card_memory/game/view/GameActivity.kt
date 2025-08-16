@@ -8,6 +8,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import dagger.hilt.android.AndroidEntryPoint
 import net.wackwack.pic_card_memory.R
 
@@ -43,6 +45,16 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.gameMain)) { v, insets ->
+                val systemBarsInsets: androidx.core.graphics.Insets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, systemBarsInsets.bottom)
+                WindowInsetsCompat.CONSUMED
+            }
+        }
+
+
 
         val isPermitted = (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         if(isPermitted) {

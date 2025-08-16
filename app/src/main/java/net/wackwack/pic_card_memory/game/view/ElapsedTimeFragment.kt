@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import net.wackwack.pic_card_memory.databinding.FragmentElapsedTimeBinding
 import net.wackwack.pic_card_memory.game.viewmodel.GameViewModel
 import net.wackwack.pic_card_memory.R
@@ -17,9 +20,11 @@ class ElapsedTimeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.elapsedTime.collect {
-                elapsedTimeBinding.textElapsedTime.text = viewModel.elapsedTimeToString()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.elapsedTime.collect {
+                    elapsedTimeBinding.textElapsedTime.text = viewModel.elapsedTimeToString()
+                }
             }
         }
     }

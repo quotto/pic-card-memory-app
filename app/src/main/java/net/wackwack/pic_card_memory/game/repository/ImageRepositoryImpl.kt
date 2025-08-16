@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -34,11 +35,22 @@ class ImageRepositoryImpl @Inject constructor(@ApplicationContext val context: C
         return result
     }
 
+    // Android 16対応: 新しいPhoto Picker APIを活用する準備
     override fun loadImageByCard(card: Card): Bitmap {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            context.contentResolver.loadThumbnail(Uri.parse(card.uriString), Size(640, 480),null)
-        } else {
-            MediaStore.Images.Media.getBitmap(context.contentResolver,Uri.parse(card.uriString))
+        return when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                // Android 10+ でloadThumbnailを使用
+                context.contentResolver.loadThumbnail(Uri.parse(card.uriString), Size(640, 480), null)
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> {
+                // Android 9+ でImageDecoderを使用
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, Uri.parse(card.uriString)))
+            }
+            else -> {
+                // Android 8以下では従来のgetBitmap（非推奨だが互換性のため）
+                @Suppress("DEPRECATION")
+                MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(card.uriString))
+            }
         }
     }
 
